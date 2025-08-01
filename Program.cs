@@ -5,15 +5,24 @@ using Npgsql.EntityFrameworkCore.PostgreSQL;
 using dotenv.net;
 using System.Text;
 using SqlAPI.Data;
+using SqlAPI.Services;
 
 DotEnv.Load();
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddOpenApi(); // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+// Register DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")));
+
+// Register controllers and API services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Register JWT service
+builder.Services.AddSingleton<JwtService>();
+
+// Configure JWT authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -31,6 +40,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ClockSkew = TimeSpan.Zero
         };
     });
+
+// Configure authorization policies
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("AdminPolicy", policy => 
         policy.RequireRole("Admin"));

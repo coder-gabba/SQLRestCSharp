@@ -1,19 +1,31 @@
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SqlAPI.Models
 {
+    /// <summary>
+    /// Represents a person entity in the system
+    /// </summary>
     public class Person
     {
+        /// <summary>
+        /// Unique identifier for the person
+        /// </summary>
         [Key]
         public int Id { get; set; }
-        [Required] // NOT NULL
-        [StringLength(100)] // VARCHAR(100)
-        public string Name { get; set; }
 
-        [Required] // NOT NULL
-        [EmailAddress] // E-Mail-Validierung
-        [StringLength(100)] // VARCHAR(100)
-        public string Email { get; set; }
+        /// <summary>
+        /// The person's full name (required, max 100 characters)
+        /// </summary>
+        [Required]
+        [StringLength(100)]
+        public required string Name { get; set; }
+
+        /// <summary>
+        /// The person's email address (required, valid email format, max 100 characters)
+        /// </summary>
+        [Required]
+        [EmailAddress]
+        [StringLength(100)]
+        public required string Email { get; set; }
     }
 }
