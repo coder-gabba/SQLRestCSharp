@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SqlAPI.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -59,16 +60,15 @@ public class PeopleController : ControllerBase
     }
 
     // DELETE: api/people/5
+    // Controllers/PeopleController.cs
     [HttpDelete("{id}")]
+    [Authorize(Policy = "AdminPolicy")] // Nur Admins dürfen Personen löschen
     public async Task<IActionResult> DeletePerson(int id)
     {
         var person = await _context.People.FindAsync(id);
-        if (person == null)
-            return NotFound();
-
+        if (person == null) return NotFound();
         _context.People.Remove(person);
         await _context.SaveChangesAsync();
-
         return NoContent();
     }
 }

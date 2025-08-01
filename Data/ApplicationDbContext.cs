@@ -5,9 +5,9 @@ namespace SqlAPI.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options) { }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         public DbSet<Person> People { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }

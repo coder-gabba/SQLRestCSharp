@@ -8,18 +8,12 @@ using SqlAPI.Data;
 
 DotEnv.Load();
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-// Configure PostgreSQL DbContext
+builder.Services.AddOpenApi(); // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")));
-// Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-// Using environment variables directly in JWT configuration
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -32,11 +26,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
             ValidateAudience = true,
             ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
-            // Add expiration if needed
+            RequireExpirationTime = true,
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero
         };
     });
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("AdminPolicy", policy => 
+        policy.RequireRole("Admin"));
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
@@ -47,6 +46,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
