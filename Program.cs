@@ -20,6 +20,9 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.File("logs/sqlapi-.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
+// Database initialization
+await InitializeDatabaseAsync();
+
 try
 {
     Log.Information("Starting web application");
@@ -29,76 +32,131 @@ try
     // Add Serilog to the host
     builder.Host.UseSerilog();
 
-    // Add services to the container.
-
-    // Register DbContext with PostgreSQL
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseNpgsql(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")));
-
-// Register AutoMapper
-builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
-    // Register controllers and add FluentValidation
-    builder.Services.AddControllers();
-    builder.Services.AddFluentValidationAutoValidation();
-    builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo 
-    { 
-        Title = "SQL API", 
-        Version = "v1",
-        Description = "A simple REST API demonstrating CRUD operations with JWT authentication"
-    });
-    
-    // Include XML comments for better API documentation
-    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    if (File.Exists(xmlPath))
-    {
-        c.IncludeXmlComments(xmlPath);
-    }
-});
-
-// Register custom services
-builder.Services.AddSingleton<JwtService>();
-builder.Services.AddSingleton(new PostgreSqlDatabaseHandler(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")!));
-
-
-// Configure JWT authentication
-var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") 
-    ?? throw new InvalidOperationException("JWT_KEY environment variable is not configured");
-var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") 
-    ?? throw new InvalidOperationException("JWT_ISSUER environment variable is not configured");
-var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") 
-    ?? throw new InvalidOperationException("JWT_AUDIENCE environment variable is not configured");
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
-            ValidateIssuer = true,
-            ValidIssuer = jwtIssuer,
-            ValidateAudience = true,
-            ValidAudience = jwtAudience,
-            RequireExpirationTime = true,
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero
-        };
-    });
-
-// Configure authorization policies
-builder.Services.AddAuthorizationBuilder()
-    .AddPolicy("AdminPolicy", policy => 
-        policy.RequireRole("Admin"));
+    // Configure services
+    ConfigureServices(builder.Services);
 
     var app = builder.Build();
 
-    // Configure the HTTP request pipeline.
+    // Configure pipeline
+    ConfigurePipeline(app);
+
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
+
+static async Task InitializeDatabaseAsync()
+{
+    var dbHandler = new PostgreSqlDatabaseHandler(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")!);
+    
+    Log.Information("Initializing database schema...");
+    await dbHandler.CreateTableAsync<SqlAPI.Models.Person>();
+    await dbHandler.CreateTableAsync<SqlAPI.Models.User>();
+    Log.Information("Database tables ready");
+
+    // Development test data
+    if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+    {
+        Log.Information("Development mode - checking for test data");
+        var existingPeople = await dbHandler.GetAllAsync<SqlAPI.Models.Person>();
+        if (!existingPeople.Any())
+        {
+            Log.Information("No test data found - inserting sample person");
+            await dbHandler.InsertAndCloseAsync(new SqlAPI.Models.Person
+            {
+                Name = "Max Mustermann",
+                Age = 30,
+                Email = "max@mustermann.de"
+            });
+            Log.Information("Sample data inserted");
+        }
+        else
+        {
+            Log.Information($"Found {existingPeople.Count} existing person records");
+        }
+    }
+
+    Log.Information("Database initialization complete");
+}
+
+static void ConfigureServices(IServiceCollection services)
+{
+    // Register DbContext with PostgreSQL
+    services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseNpgsql(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")));
+
+    // Register AutoMapper
+    services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+    // Register controllers and add FluentValidation
+    services.AddControllers();
+    services.AddFluentValidationAutoValidation();
+    services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+    
+    // API Documentation
+    services.AddEndpointsApiExplorer();
+    services.AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+        {
+            Title = "SQL API",
+            Version = "v1",
+            Description = "A simple REST API demonstrating CRUD operations with JWT authentication"
+        });
+
+        // Include XML comments for better API documentation
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        if (File.Exists(xmlPath))
+        {
+            c.IncludeXmlComments(xmlPath);
+        }
+    });
+
+    // Register custom services
+    services.AddSingleton<JwtService>();
+    services.AddSingleton(new PostgreSqlDatabaseHandler(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")!));
+
+    // Configure JWT authentication
+    var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY")
+        ?? throw new InvalidOperationException("JWT_KEY environment variable is not configured");
+    var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER")
+        ?? throw new InvalidOperationException("JWT_ISSUER environment variable is not configured");
+    var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE")
+        ?? throw new InvalidOperationException("JWT_AUDIENCE environment variable is not configured");
+
+    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+                ValidateIssuer = true,
+                ValidIssuer = jwtIssuer,
+                ValidateAudience = true,
+                ValidAudience = jwtAudience,
+                RequireExpirationTime = true,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+        });
+
+    // Configure authorization policies
+    services.AddAuthorizationBuilder()
+        .AddPolicy("AdminPolicy", policy =>
+            policy.RequireRole("Admin"));
+}
+
+static void ConfigurePipeline(WebApplication app)
+{
+    // Configure the HTTP request pipeline
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
@@ -110,19 +168,7 @@ builder.Services.AddAuthorizationBuilder()
     }
 
     app.UseHttpsRedirection();
-
     app.UseAuthentication();
     app.UseAuthorization();
-
     app.MapControllers();
-
-    app.Run();
-}
-catch (Exception ex)
-{
-    Log.Fatal(ex, "Application terminated unexpectedly");
-}
-finally
-{
-    Log.CloseAndFlush();
 }

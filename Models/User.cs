@@ -18,19 +18,19 @@ namespace SqlAPI.Models
         /// </summary>
         [Required]
         [StringLength(50)]
-        public required string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
 
         /// <summary>
         /// The hashed password for authentication (required)
         /// </summary>
         [Required]
-        public required string PasswordHash { get; set; }
+        public string PasswordHash { get; set; } = string.Empty;
 
         /// <summary>
         /// The role assigned to the user (required, max 20 characters)
         /// </summary>
         [Required]
         [StringLength(20)]
-        public required string Role { get; set; }
+        public string Role { get; set; } = string.Empty;
     }
 }

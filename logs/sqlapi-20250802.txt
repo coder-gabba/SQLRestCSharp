@@ -1,0 +1,4 @@
+2025-08-02 21:29:40.772 +02:00 [INF] Connecting to PostgreSQL database with Host=localhost;Database=mytestdb;Username=pg777;Password=mz3iOjRVk1wMW482slwLa4ftNURzICLSxNnq5DOv6vk;Port=5434
+2025-08-02 21:29:42.784 +02:00 [INF] Creating Person table if it does not exist
+2025-08-02 21:41:09.828 +02:00 [INF] Connecting to PostgreSQL database with Host=localhost;Database=mytestdb;Username=pg777;Password=mz3iOjRVk1wMW482slwLa4ftNURzICLSxNnq5DOv6vk;Port=5434
+2025-08-02 21:41:10.513 +02:00 [INF] Creating Person table if it does not exist

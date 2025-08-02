@@ -18,7 +18,7 @@ namespace SqlAPI.Models
         /// </summary>
         [Required]
         [StringLength(100)]
-        public required string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// The person's age (required, must be between 0 and 150)
@@ -33,6 +33,6 @@ namespace SqlAPI.Models
         [Required]
         [EmailAddress]
         [StringLength(100)]
-        public required string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
     }
 }

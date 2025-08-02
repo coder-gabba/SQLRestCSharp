@@ -178,7 +178,9 @@ namespace SqlAPI.Data
             var idValue = idProperty.GetValue(entity);
             var setClauses = properties.Select(p => $"\"{p.Name}\" = @{p.Name}");
             var queryParams = properties.ToDictionary(p => $"@{p.Name}", p => p.GetValue(entity) ?? DBNull.Value);
+#pragma warning disable CS8604 // Possible null reference argument.
             queryParams.Add("@Id", idValue);
+#pragma warning restore CS8604 // Possible null reference argument.
 
             string sql = $"UPDATE \"{tableName}\" SET {string.Join(", ", setClauses)} WHERE \"Id\" = @Id;";
             return await ExecuteNonQueryAsync(sql, queryParams);
@@ -195,6 +197,73 @@ namespace SqlAPI.Data
             var queryParams = new Dictionary<string, object> { { "@Id", id } };
             string sql = $"DELETE FROM \"{tableName}\" WHERE \"Id\" = @Id;";
             return await ExecuteNonQueryAsync(sql, queryParams);
+        }
+
+        /// <summary>
+        /// Fügt eine Entität in die Datenbank ein und schließt automatisch die Verbindung.
+        /// Diese Methode ist ideal für einmalige Einfügungen ohne weitere Operationen.
+        /// </summary>
+        public async Task<object?> InsertAndCloseAsync<T>(T entity) where T : class
+        {
+            try
+            {
+                if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+                string tableName = GetTableName<T>();
+                var properties = typeof(T).GetProperties().Where(p => p.Name != "Id");
+
+                var columnNames = properties.Select(p => $"\"{p.Name}\"");
+                var parameterNames = properties.Select(p => $"@{p.Name}");
+                var queryParams = properties.ToDictionary(p => $"@{p.Name}", p => p.GetValue(entity) ?? DBNull.Value);
+
+                string sql = $"INSERT INTO \"{tableName}\" ({string.Join(", ", columnNames)}) VALUES ({string.Join(", ", parameterNames)}) RETURNING \"Id\";";
+                
+                await OpenConnectionAsync();
+                using (var command = CreateCommand(sql, queryParams))
+                {
+                    return await command.ExecuteScalarAsync();
+                }
+            }
+            finally
+            {
+                await CloseConnectionAsync();
+            }
+        }
+
+        /// <summary>
+        /// Erstellt eine Tabelle basierend auf dem angegebenen Entity-Typ.
+        /// Diese Methode analysiert die Eigenschaften des Typs und erstellt entsprechende Spalten.
+        /// </summary>
+        public async Task CreateTableAsync<T>() where T : class
+        {
+            try
+            {
+                string tableName = GetTableName<T>();
+                var properties = typeof(T).GetProperties();
+                
+                var columns = new List<string>();
+                
+                foreach (var property in properties)
+                {
+                    string columnDefinition = GetColumnDefinition(property);
+                    columns.Add(columnDefinition);
+                }
+
+                string sql = $@"
+                    CREATE TABLE IF NOT EXISTS ""{tableName}"" (
+                        {string.Join(",\n                        ", columns)}
+                    );";
+
+                await OpenConnectionAsync();
+                using (var command = CreateCommand(sql, null))
+                {
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+            finally
+            {
+                await CloseConnectionAsync();
+            }
         }
 
         // --- Private Helper-Methoden ---
@@ -221,6 +290,46 @@ namespace SqlAPI.Data
                 }
             }
             return entity;
+        }
+
+        private string GetColumnDefinition(System.Reflection.PropertyInfo property)
+        {
+            string columnName = $"\"{property.Name}\"";
+            string dataType = GetPostgreSqlDataType(property.PropertyType);
+            
+            // Spezielle Behandlung für Id-Spalte
+            if (property.Name.Equals("Id", StringComparison.OrdinalIgnoreCase))
+            {
+                return $"{columnName} SERIAL PRIMARY KEY";
+            }
+            
+            // Überprüfe ob die Eigenschaft nullable ist
+            bool isNullable = Nullable.GetUnderlyingType(property.PropertyType) != null || 
+                             !property.PropertyType.IsValueType;
+            
+            string nullConstraint = isNullable ? "" : " NOT NULL";
+            
+            return $"{columnName} {dataType}{nullConstraint}";
+        }
+
+        private string GetPostgreSqlDataType(Type type)
+        {
+            // Handle nullable types
+            Type underlyingType = Nullable.GetUnderlyingType(type) ?? type;
+            
+            return underlyingType.Name switch
+            {
+                nameof(Int32) => "INTEGER",
+                nameof(Int64) => "BIGINT",
+                nameof(String) => "TEXT",
+                nameof(Boolean) => "BOOLEAN",
+                nameof(DateTime) => "TIMESTAMP",
+                nameof(Decimal) => "DECIMAL",
+                nameof(Double) => "DOUBLE PRECISION",
+                nameof(Single) => "REAL",
+                nameof(Guid) => "UUID",
+                _ => "TEXT" // Fallback für unbekannte Typen
+            };
         }
 
         private NpgsqlCommand CreateCommand(string sql, Dictionary<string, object>? parameters)
