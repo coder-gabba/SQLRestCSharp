@@ -1,33 +1,50 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SqlAPI.Data;
+using SqlAPI.Models;
+using SqlAPI.Services;
 
-[ApiController]
-[Route("api/[controller]")]
-public class AuthController : ControllerBase
+namespace SqlAPI.Controllers
 {
-    private readonly ApplicationDbContext _context;
-    private readonly JwtService _jwtService;
-
-    public AuthController(ApplicationDbContext context, JwtService jwtService)
+    /// <summary>
+    /// Controller for handling authentication operations
+    /// </summary>
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AuthController : ControllerBase
     {
-        _context = context;
-        _jwtService = jwtService;
-    }
+        private readonly ApplicationDbContext _context;
+        private readonly JwtService _jwtService;
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request)
-    {
-        var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Username == request.Username);
-
-        if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+        public AuthController(ApplicationDbContext context, JwtService jwtService)
         {
-            return Unauthorized("Invalid credentials");
+            _context = context;
+            _jwtService = jwtService;
         }
 
-        //var token = _jwtService.GenerateToken(user.Username, user.Role);
-        var token = _jwtService.GenerateToken(user.Username);
-        return Ok(new { Token = token });
+        /// <summary>
+        /// Authenticates a user and returns a JWT token
+        /// </summary>
+        /// <param name="request">Login credentials</param>
+        /// <returns>JWT token if authentication successful</returns>
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == request.Username);
+
+            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+            {
+                return Unauthorized("Invalid credentials");
+            }
+
+            var token = _jwtService.GenerateToken(user.Username);
+            return Ok(new { Token = token });
+        }
     }
 }

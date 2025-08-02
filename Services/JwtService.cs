@@ -1,61 +1,51 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
-using SqlAPI.Models;
+using System.Text;
 
-public class JwtService
+namespace SqlAPI.Services
 {
-    private readonly IConfiguration _config;
-
-    public JwtService(IConfiguration config)
+    /// <summary>
+    /// Service for generating and validating JWT tokens
+    /// </summary>
+    public class JwtService
     {
-        _config = config;
+        /// <summary>
+        /// Generates a JWT token for the specified username with Admin role
+        /// </summary>
+        /// <param name="username">The username to include in the token</param>
+        /// <returns>A JWT token string</returns>
+        public string GenerateToken(string username)
+        {
+            var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") 
+                ?? throw new InvalidOperationException("JWT Key is not configured");
+            var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER") 
+                ?? throw new InvalidOperationException("JWT Issuer is not configured");
+            var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") 
+                ?? throw new InvalidOperationException("JWT Audience is not configured");
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(jwtKey);
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.Role, "Admin")
+            };
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddMinutes(30),
+                Issuer = jwtIssuer,
+                Audience = jwtAudience,
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key), 
+                    SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
     }
-
-    private SecurityTokenDescriptor TokenDescriptor(IEnumerable<Claim> claims)
-    {
-        var tokenDescriptor = new SecurityTokenDescriptor
-    {
-        Subject = new ClaimsIdentity(claims),
-        Expires = DateTime.UtcNow.AddMinutes(30),
-        Issuer = _config["Jwt:Issuer"],
-        Audience = _config["Jwt:Audience"],
-        SigningCredentials = new SigningCredentials(
-            new SymmetricSecurityKey(
-                System.Text.Encoding.UTF8.GetBytes(
-                    _config["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not configured")
-                    )), SecurityAlgorithms.HmacSha256Signature)
-    };
-        return tokenDescriptor;
-    }
-    public string GenerateToken(Person user)
-    {
-        var securityKey = new SymmetricSecurityKey(
-            System.Text.Encoding.UTF8.GetBytes(_config["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not configured")));
-        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-        var token = new JwtSecurityToken(
-            issuer: _config["Jwt:Issuer"],
-            audience: _config["Jwt:Audience"],
-            claims:
-            [
-                
-            ],
-            expires: DateTime.Now.AddMinutes(30),
-            signingCredentials: credentials
-        );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
-    public string GenerateToken(string username)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        Claim[] c = [
-                new(ClaimTypes.Name, username),
-            new(ClaimTypes.Role, "Admin")
-            ];
-        var token = tokenHandler.CreateToken(TokenDescriptor(c));
-        return tokenHandler.WriteToken(token);
-    }
-
 }
