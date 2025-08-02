@@ -6,11 +6,36 @@
 </div>
 
 <p align="center">
+  <img alt="Project Status" src="https://img.shields.io/badge/status-active-brightgreen.svg?style=for-the-badge" />
   <img alt=".NET" src="https://img.shields.io/badge/.NET-9-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" />
   <img alt="C#" src="https://img.shields.io/badge/C%23-12-239120?style=for-the-badge&logo=c-sharp&logoColor=white" />
   <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" />
   <img alt="License" src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" />
 </p>
+
+---
+
+## 🏛️ Architecture Overview
+
+This project follows a clean, layered architecture to ensure separation of concerns and maintainability.
+
+```
++-------------------+      +-------------------+      +-------------------+
+|   Controllers     |----->|      Services     |----->|       Data        |
+| (API Endpoints)   |      |  (Business Logic) |      | (Database Access) |
++-------------------+      +-------------------+      +-------------------+
+        |                          ^                          |
+        |                          |                          |
+        v                          |                          v
++-------------------+      +-------------------+      +-------------------+
+|      Models       |<-----|      (DTOs)       |      |   (EF Core)       |
+| (Data Structures) |      +-------------------+      +-------------------+
+```
+
+-   **Controllers:** Handle incoming HTTP requests and send responses.
+-   **Services:** Contain the core business logic (e.g., JWT generation).
+-   **Data:** Manages database interactions via Entity Framework Core (`ApplicationDbContext`).
+-   **Models:** Define the data structures (`User`, `Person`, `LoginRequest`).
 
 ---
 
@@ -20,9 +45,16 @@
 -   **Secure Authentication:** JWT-based authentication to protect endpoints.
 -   **Role-Based Authorization:** Differentiated access levels (e.g., `Admin` role for deletion).
 -   **PostgreSQL Integration:** Uses Entity Framework Core for seamless database interaction.
--   **Secure Configuration:** Sensitive data like connection strings and JWT secrets are managed via a `.env` file.
+-   **Secure Configuration:** Sensitive data is managed via a `.env` file.
 -   **API Documentation:** Integrated Swagger UI for easy testing and API exploration.
--   **Clean Architecture:** Organized project structure with clear separation of concerns (`Data`, `Models`, `Services`, `Controllers`).
+
+---
+
+## 📸 Demo & Screenshots
+
+Here is a look at the Swagger UI, which makes interacting with the API straightforward.
+
+*(Placeholder: Fügen Sie hier einen Screenshot Ihrer Swagger-UI ein, z.B. `![Swagger UI Demo](link_zum_screenshot.png)`)*
 
 ---
 
@@ -34,7 +66,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 -   [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) or later
 -   [PostgreSQL](https://www.postgresql.org/download/)
--   An API testing tool like [Postman](https://www.postman.com/) or use the built-in Swagger UI.
+-   An API testing tool like [Postman](https://www.postman.com/) or `curl`.
 
 ### Installation & Setup
 
@@ -75,46 +107,102 @@ These instructions will get you a copy of the project up and running on your loc
 
 ---
 
-## 🕹️ Usage & API Endpoints
+## 🕹️ API Usage Examples
 
-After starting the application, you can use the Swagger UI to interact with the API.
+Here are some examples of how to interact with the API using `curl`.
 
-### Authentication (`/api/auth`)
+### 1. Register a new user
 
-First, you need to register a user and then log in to get a JWT.
+```bash
+curl -X POST "https://localhost:7123/api/auth/register" \
+     -H "Content-Type: application/json" \
+     -d '{"username": "testuser", "password": "Password123!", "role": "User"}'
+```
 
-1.  **Register a user:** Send a `POST` request to `/api/auth/register`.
-2.  **Log in:** Send a `POST` request to `/api/auth/login` with the user's credentials.
-3.  **Use the Token:** Copy the received JWT and click the "Authorize" button in Swagger. Paste the token in the format `Bearer <YourToken>`.
+### 2. Log in to get a token
 
-| Method | Endpoint        | Description                               |
-| :------ | :-------------- | :----------------------------------------- |
-| `POST`  | `/register`     | Registers a new user.                      |
-| `POST`  | `/login`        | Logs in a user and returns a JWT.          |
+```bash
+curl -X POST "https://localhost:7123/api/auth/login" \
+     -H "Content-Type: application/json" \
+     -d '{"username": "testuser", "password": "Password123!"}'
+```
+**Example Response:**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
 
-### People (`/api/people`)
+### 3. Get all people (with token)
 
-All endpoints require a valid JWT in the `Authorization` header.
+```bash
+TOKEN="your_jwt_token_here"
+curl -X GET "https://localhost:7123/api/people" \
+     -H "Authorization: Bearer $TOKEN"
+```
 
-| Method | Endpoint        | Description                               | Required Role |
-| :------ | :-------------- | :----------------------------------------- | :-------------- |
-| `GET`   | `/`             | Retrieves a list of all people.            | Any             |
-| `GET`   | `/{id}`         | Retrieves a single person by their ID.     | Any             |
-| `POST`  | `/`             | Creates a new person.                      | Any             |
-| `PUT`   | `/{id}`         | Updates an existing person.                | Any             |
-| `DELETE`| `/{id}`         | Deletes a person by their ID.              | **Admin**       |
+---
+
+## 🔧 Troubleshooting & FAQ
+
+**Q: I get a 401 Unauthorized error even with a token.**
+**A:** Make sure your token is not expired and that you are sending it in the correct format: `Authorization: Bearer <YourToken>`. Also, verify that the `JWT_KEY`, `JWT_ISSUER`, and `JWT_AUDIENCE` in your `.env` file match the values used to generate the token.
+
+**Q: `dotnet ef database update` fails.**
+**A:** Ensure your PostgreSQL server is running and that the connection string in your `.env` file is correct.
+
+---
+
+## 🔐 Security Best Practices
+
+-   **Never commit your `.env` file** to version control. The `.gitignore` file is already configured to prevent this.
+-   Use strong, unique passwords for your database.
+-   In a production environment, use a more robust secret management solution like Azure Key Vault, AWS Secrets Manager, or HashiCorp Vault instead of a `.env` file.
+-   Regularly rotate your `JWT_KEY`.
+
+---
+
+## ☁️ Deployment
+
+This API is container-ready. You can build a Docker image using a `Dockerfile`.
+
+*(Placeholder: Fügen Sie hier ein Beispiel-Dockerfile und Docker-Befehle hinzu, falls gewünscht.)*
+
+The application can be deployed to any cloud provider that supports .NET, such as Azure App Service, AWS Elastic Beanstalk, or Heroku.
+
+---
+
+## 🗺️ Roadmap
+
+-   [ ] Implement refresh tokens for longer-lived sessions.
+-   [ ] Add more comprehensive unit and integration tests.
+-   [ ] Introduce a logging framework like Serilog for structured logging.
+
+---
+
+## 📜 Changelog
+
+**v1.0.0 (Current)**
+-   Initial release.
+-   Features: CRUD for People, JWT Authentication, Role-based Authorization.
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are welcome! Please fork the repository and open a pull request with your changes.
 
 1.  Fork the Project
 2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
 3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4.  Push to the Branch (`git push origin feature/AmazingFeature`)
 5.  Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
 ---
 
