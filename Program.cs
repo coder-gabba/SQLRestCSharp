@@ -5,18 +5,43 @@ using dotenv.net;
 using System.Text;
 using SqlAPI.Data;
 using SqlAPI.Services;
+using Serilog;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using System.Reflection;
 
 // Load environment variables from .env file
 DotEnv.Load();
 
-var builder = WebApplication.CreateBuilder(args);
+// Configure Serilog for structured logging
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.Console()
+    .WriteTo.File("logs/sqlapi-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
-// Register DbContext with PostgreSQL
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")));
+try
+{
+    Log.Information("Starting web application");
 
-// Register controllers and API services
-builder.Services.AddControllers();
+    var builder = WebApplication.CreateBuilder(args);
+
+    // Add Serilog to the host
+    builder.Host.UseSerilog();
+
+    // Add services to the container.
+
+    // Register DbContext with PostgreSQL
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseNpgsql(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")));
+
+// Register AutoMapper
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+    // Register controllers and add FluentValidation
+    builder.Services.AddControllers();
+    builder.Services.AddFluentValidationAutoValidation();
+    builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -38,6 +63,8 @@ builder.Services.AddSwaggerGen(c =>
 
 // Register custom services
 builder.Services.AddSingleton<JwtService>();
+builder.Services.AddSingleton(new PostgreSqlDatabaseHandler(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")!));
+
 
 // Configure JWT authentication
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") 
@@ -69,22 +96,33 @@ builder.Services.AddAuthorizationBuilder()
     .AddPolicy("AdminPolicy", policy => 
         policy.RequireRole("Admin"));
 
-var app = builder.Build();
+    var app = builder.Build();
 
-// Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "SQL API v1");
-        c.RoutePrefix = string.Empty; // Serve Swagger UI at the app's root
-    });
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "SQL API v1");
+            c.RoutePrefix = string.Empty; // Serve Swagger UI at the app's root
+        });
+    }
+
+    app.UseHttpsRedirection();
+
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    app.MapControllers();
+
+    app.Run();
 }
-
-app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapControllers();
-
-app.Run();
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

@@ -1,8 +1,12 @@
+using AutoMapper;
 using SqlAPI.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SqlAPI.Models;
 using Microsoft.AspNetCore.Authorization;
+using SqlAPI.DTOs;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SqlAPI.Controllers
 {
@@ -14,10 +18,12 @@ namespace SqlAPI.Controllers
     public class PeopleController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public PeopleController(ApplicationDbContext context)
+        public PeopleController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -25,9 +31,10 @@ namespace SqlAPI.Controllers
         /// </summary>
         /// <returns>A list of all people</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Person>>> GetPeople()
+        public async Task<ActionResult<IEnumerable<PersonDto>>> GetPeople()
         {
-            return await _context.People.ToListAsync();
+            var people = await _context.People.ToListAsync();
+            return Ok(_mapper.Map<IEnumerable<PersonDto>>(people));
         }
 
         /// <summary>
@@ -36,53 +43,52 @@ namespace SqlAPI.Controllers
         /// <param name="id">The ID of the person to retrieve</param>
         /// <returns>The person with the specified ID</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Person>> GetPerson(int id)
+        public async Task<ActionResult<PersonDto>> GetPerson(int id)
         {
             var person = await _context.People.FindAsync(id);
 
             if (person == null)
                 return NotFound($"Person with ID {id} not found");
 
-            return person;
+            return Ok(_mapper.Map<PersonDto>(person));
         }
 
         /// <summary>
         /// Creates a new person
         /// </summary>
-        /// <param name="person">The person data to create</param>
+        /// <param name="personDto">The person data to create</param>
         /// <returns>The created person</returns>
         [HttpPost]
-        public async Task<ActionResult<Person>> PostPerson(Person person)
+        public async Task<ActionResult<PersonDto>> PostPerson(PersonDto personDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            var person = _mapper.Map<Person>(personDto);
 
             _context.People.Add(person);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPerson", new { id = person.Id }, person);
+            var createdPersonDto = _mapper.Map<PersonDto>(person);
+            return CreatedAtAction(nameof(GetPerson), new { id = createdPersonDto.Id }, createdPersonDto);
         }
 
         /// <summary>
         /// Updates an existing person
         /// </summary>
         /// <param name="id">The ID of the person to update</param>
-        /// <param name="person">The updated person data</param>
+        /// <param name="personDto">The updated person data</param>
         /// <returns>No content if successful</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPerson(int id, Person person)
+        public async Task<IActionResult> PutPerson(int id, PersonDto personDto)
         {
-            if (id != person.Id)
+            if (id != personDto.Id)
                 return BadRequest("ID mismatch between URL and request body");
 
-            if (!ModelState.IsValid)
+            var personInDb = await _context.People.FindAsync(id);
+            if (personInDb == null)
             {
-                return BadRequest(ModelState);
+                return NotFound($"Person with ID {id} not found");
             }
 
-            _context.Entry(person).State = EntityState.Modified;
+            _mapper.Map(personDto, personInDb);
 
             try
             {
@@ -110,11 +116,14 @@ namespace SqlAPI.Controllers
         public async Task<IActionResult> DeletePerson(int id)
         {
             var person = await _context.People.FindAsync(id);
-            if (person == null) 
+            if (person == null)
+            {
                 return NotFound($"Person with ID {id} not found");
+            }
 
             _context.People.Remove(person);
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
 
