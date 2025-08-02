@@ -4,6 +4,7 @@ using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.InMemory;
 using SqlAPI.Controllers;
 using SqlAPI.Data;
 using SqlAPI.DTOs;

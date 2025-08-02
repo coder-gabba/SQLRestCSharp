@@ -21,6 +21,13 @@ namespace SqlAPI.Models
         public required string Name { get; set; }
 
         /// <summary>
+        /// The person's age (required, must be between 0 and 150)
+        /// </summary>
+        [Required]
+        [Range(0, 150)]
+        public int Age { get; set; }
+
+        /// <summary>
         /// The person's email address (required, valid email format, max 100 characters)
         /// </summary>
         [Required]
