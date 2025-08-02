@@ -1,85 +1,125 @@
-# SqlAPI
+<div align="center">
+  <h1 align="center">SqlAPI - REST API with .NET</h1>
+  <p align="center">
+    A robust REST API built with ASP.NET Core demonstrating CRUD operations, JWT authentication, and role-based authorization with a PostgreSQL database.
+  </p>
+</div>
 
-Dies ist eine REST-API, die mit ASP.NET Core erstellt wurde und grundlegende CRUD-Operationen (Create, Read, Update, Delete) für eine "Personen"-Entität demonstriert. Die API ist durch JWT (JSON Web Tokens) gesichert und enthält eine rollenbasierte Autorisierung.
+<p align="center">
+  <img alt=".NET" src="https://img.shields.io/badge/.NET-9-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" />
+  <img alt="C#" src="https://img.shields.io/badge/C%23-12-239120?style=for-the-badge&logo=c-sharp&logoColor=white" />
+  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" />
+  <img alt="License" src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" />
+</p>
 
-## Funktionen
+---
 
--   **CRUD-Operationen:** Vollständige Erstellung, Lesung, Aktualisierung und Löschung für Personen.
--   **Authentifizierung:** Sicherer Login-Endpunkt, der JWTs generiert.
--   **Autorisierung:** Endpunkte sind geschützt. Bestimmte Aktionen (wie Löschen) erfordern eine "Admin"-Rolle.
--   **Datenbank:** Verwendet Entity Framework Core mit PostgreSQL.
--   **Sichere Konfiguration:** Lädt sensible Daten (Datenbank-Verbindungszeichenfolge, JWT-Schlüssel) aus einer `.env`-Datei.
--   **API-Dokumentation:** Integrierte Swagger-UI mit detaillierten Beschreibungen und XML-Kommentaren.
+## ✨ Features
 
-## Voraussetzungen
+-   **Full CRUD Operations:** Create, Read, Update, and Delete functionality for a `People` entity.
+-   **Secure Authentication:** JWT-based authentication to protect endpoints.
+-   **Role-Based Authorization:** Differentiated access levels (e.g., `Admin` role for deletion).
+-   **PostgreSQL Integration:** Uses Entity Framework Core for seamless database interaction.
+-   **Secure Configuration:** Sensitive data like connection strings and JWT secrets are managed via a `.env` file.
+-   **API Documentation:** Integrated Swagger UI for easy testing and API exploration.
+-   **Clean Architecture:** Organized project structure with clear separation of concerns (`Data`, `Models`, `Services`, `Controllers`).
 
--   [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) oder höher
+---
+
+## 🚀 Getting Started
+
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+
+### Prerequisites
+
+-   [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) or later
 -   [PostgreSQL](https://www.postgresql.org/download/)
--   Ein API-Testtool wie [Postman](https://www.postman.com/) oder die Verwendung der integrierten Swagger-UI.
+-   An API testing tool like [Postman](https://www.postman.com/) or use the built-in Swagger UI.
 
-## Einrichtung
+### Installation & Setup
 
-1.  **Repository klonen:**
+1.  **Clone the repository:**
     ```bash
     git clone https://github.com/coder-gabba/SQLRestCSharp.git
     cd SQLRestCSharp
     ```
 
-2.  **Umgebungsvariablen konfigurieren:**
-    Erstellen Sie eine `.env`-Datei im Hauptverzeichnis des Projekts, indem Sie die `.env.example`-Datei kopieren:
+2.  **Configure Environment Variables:**
+    Create a `.env` file by copying the example file. This is crucial for security.
     ```bash
     cp .env.example .env
     ```
-    Öffnen Sie die neue `.env`-Datei und ersetzen Sie die Platzhalterwerte durch Ihre tatsächlichen Daten:
-    ```
+    Now, open the new `.env` file and replace the placeholder values with your actual database and JWT credentials.
+    ```ini
     # PostgreSQL Connection String
-    SQL_CONNECTION_STRING="Host=localhost;Port=5432;Database=IhreDatenbank;Username=IhrBenutzer;Password=IhrPasswort"
+    SQL_CONNECTION_STRING="Host=localhost;Port=5432;Database=YourDatabase;Username=YourUser;Password=YourPassword"
 
     # JWT Settings
-    JWT_ISSUER="IhreAnwendung.com"
-    JWT_AUDIENCE="IhreAPI.com"
-    JWT_KEY="Ihr_super_geheimer_schlüssel_der_sehr_lang_ist_und_mindestens_32_zeichen_hat"
+    JWT_ISSUER="YourApp.com"
+    JWT_AUDIENCE="YourAPI.com"
+    JWT_KEY="Your_super_secret_key_that_is_very_long_and_at_least_32_chars"
     ```
 
-3.  **XML-Dokumentation aktivieren (Optional, für bessere Swagger-UI):**
-    Um die API-Dokumentation in Swagger zu verbessern, aktivieren Sie die Erstellung der XML-Dokumentationsdatei in den Projekteinstellungen (`SqlAPI.csproj`):
-    ```xml
-    <PropertyGroup>
-      <GenerateDocumentationFile>true</GenerateDocumentationFile>
-      <NoWarn>$(NoWarn);1591</NoWarn>
-    </PropertyGroup>
-    ```
-
-4.  **Datenbankmigrationen anwenden:**
-    Diese Befehle erstellen die Datenbank und die Tabellen (`People` und `Users`) basierend auf den Modellen im Code.
+3.  **Apply Database Migrations:**
+    These commands will create the database and the necessary tables (`People` and `Users`) based on the code models.
     ```bash
-    dotnet ef migrations add InitialCreate
     dotnet ef database update
     ```
+    *Note: If you are starting from scratch, you might need to create an initial migration first with `dotnet ef migrations add InitialCreate`.*
 
-5.  **Anwendung starten:**
+4.  **Run the Application:**
     ```bash
     dotnet run
     ```
-    Die API ist jetzt unter `https://localhost:port` und `http://localhost:port` erreichbar. Die Swagger-UI finden Sie direkt unter der Stamm-URL (z.B. `https://localhost:7123`).
+    The API is now running and accessible at `https://localhost:<port>` and `http://localhost:<port>`. The Swagger UI will be available at the root URL (e.g., `https://localhost:7123`).
 
-## API-Endpunkte
+---
 
-### Authentifizierung (`/api/auth`)
+## 🕹️ Usage & API Endpoints
 
-| Methode | Endpunkt        | Beschreibung                               |
+After starting the application, you can use the Swagger UI to interact with the API.
+
+### Authentication (`/api/auth`)
+
+First, you need to register a user and then log in to get a JWT.
+
+1.  **Register a user:** Send a `POST` request to `/api/auth/register`.
+2.  **Log in:** Send a `POST` request to `/api/auth/login` with the user's credentials.
+3.  **Use the Token:** Copy the received JWT and click the "Authorize" button in Swagger. Paste the token in the format `Bearer <YourToken>`.
+
+| Method | Endpoint        | Description                               |
 | :------ | :-------------- | :----------------------------------------- |
-| `POST`  | `/register`     | Registriert einen neuen Benutzer.          |
-| `POST`  | `/login`        | Meldet einen Benutzer an und gibt einen JWT zurück. |
+| `POST`  | `/register`     | Registers a new user.                      |
+| `POST`  | `/login`        | Logs in a user and returns a JWT.          |
 
-### Personen (`/api/people`)
+### People (`/api/people`)
 
-Alle Endpunkte erfordern einen gültigen JWT im `Authorization`-Header (`Bearer <token>`).
+All endpoints require a valid JWT in the `Authorization` header.
 
-| Methode | Endpunkt        | Beschreibung                               | Benötigte Rolle |
+| Method | Endpoint        | Description                               | Required Role |
 | :------ | :-------------- | :----------------------------------------- | :-------------- |
-| `GET`   | `/`             | Ruft eine Liste aller Personen ab.         | Beliebig        |
-| `GET`   | `/{id}`         | Ruft eine einzelne Person anhand ihrer ID ab. | Beliebig        |
-| `POST`  | `/`             | Erstellt eine neue Person.                 | Beliebig        |
-| `PUT`   | `/{id}`         | Aktualisiert eine vorhandene Person.       | Beliebig        |
-| `DELETE`| `/{id}`         | Löscht eine Person anhand ihrer ID.        | **Admin**       |
+| `GET`   | `/`             | Retrieves a list of all people.            | Any             |
+| `GET`   | `/{id}`         | Retrieves a single person by their ID.     | Any             |
+| `POST`  | `/`             | Creates a new person.                      | Any             |
+| `PUT`   | `/{id}`         | Updates an existing person.                | Any             |
+| `DELETE`| `/{id}`         | Deletes a person by their ID.              | **Admin**       |
+
+---
+
+## 🤝 Contributing
+
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1.  Fork the Project
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the Branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
+
+---
+
+## 📚 Learn More
+
+-   [ASP.NET Core Documentation](https://docs.microsoft.com/aspnet/core)
+-   [Entity Framework Core Docs](https://docs.microsoft.com/ef/core/)
+-   [About JWT](https://jwt.io/)
