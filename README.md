@@ -166,7 +166,7 @@ curl -X GET "https://localhost:7123/api/people" \
 
 This API is container-ready. You can build a Docker image using a `Dockerfile`.
 
-*(Placeholder: Fügen Sie hier ein Beispiel-Dockerfile und Docker-Befehle hinzu, falls gewünscht.)*
+*(Placeholder)*
 
 The application can be deployed to any cloud provider that supports .NET, such as Azure App Service, AWS Elastic Beanstalk, or Heroku.
 
