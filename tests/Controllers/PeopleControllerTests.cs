@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.InMemory;
+using Microsoft.Extensions.Logging;
 using SqlAPI.Controllers;
 using SqlAPI.Data;
 using SqlAPI.DTOs;
@@ -20,6 +21,7 @@ namespace SqlAPI.Tests.Controllers
     {
         private readonly IMapper _mapper;
         private readonly DbContextOptions<ApplicationDbContext> _dbOptions;
+        private readonly Mock<ILogger<PeopleController>> _mockLogger;
 
         public PeopleControllerTests()
         {
@@ -34,6 +36,9 @@ namespace SqlAPI.Tests.Controllers
             _dbOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: "SqlApiTestDb")
                 .Options;
+
+            // Configure Mock Logger
+            _mockLogger = new Mock<ILogger<PeopleController>>();
         }
 
         private async Task<ApplicationDbContext> GetDatabaseContext()
@@ -57,7 +62,7 @@ namespace SqlAPI.Tests.Controllers
         {
             // Arrange
             using var context = await GetDatabaseContext();
-            var controller = new PeopleController(context, _mapper);
+            var controller = new PeopleController(context, _mapper, _mockLogger.Object);
 
             // Act
             var result = await controller.GetPeople();
@@ -73,7 +78,7 @@ namespace SqlAPI.Tests.Controllers
         {
             // Arrange
             using var context = await GetDatabaseContext();
-            var controller = new PeopleController(context, _mapper);
+            var controller = new PeopleController(context, _mapper, _mockLogger.Object);
 
             // Act
             var result = await controller.GetPerson(1);
@@ -90,7 +95,7 @@ namespace SqlAPI.Tests.Controllers
         {
             // Arrange
             using var context = await GetDatabaseContext();
-            var controller = new PeopleController(context, _mapper);
+            var controller = new PeopleController(context, _mapper, _mockLogger.Object);
 
             // Act
             var result = await controller.GetPerson(99);
@@ -104,7 +109,7 @@ namespace SqlAPI.Tests.Controllers
         {
             // Arrange
             using var context = await GetDatabaseContext();
-            var controller = new PeopleController(context, _mapper);
+            var controller = new PeopleController(context, _mapper, _mockLogger.Object);
             var newPersonDto = new PersonDto { Name = "Charlie", Age = 40, Email = "charlie@example.com" };
 
             // Act
@@ -122,7 +127,7 @@ namespace SqlAPI.Tests.Controllers
         {
             // Arrange
             using var context = await GetDatabaseContext();
-            var controller = new PeopleController(context, _mapper);
+            var controller = new PeopleController(context, _mapper, _mockLogger.Object);
             var updatedDto = new PersonDto { Id = 1, Name = "Alice Smith", Age = 31, Email = "alice.smith@example.com" };
 
             // Act
@@ -131,7 +136,7 @@ namespace SqlAPI.Tests.Controllers
             // Assert
             Assert.IsType<NoContentResult>(result);
             var personInDb = await context.People.FindAsync(1);
-            personInDb.Name.Should().Be("Alice Smith");
+            personInDb!.Name.Should().Be("Alice Smith");
             personInDb.Age.Should().Be(31);
         }
 
@@ -140,7 +145,7 @@ namespace SqlAPI.Tests.Controllers
         {
             // Arrange
             using var context = await GetDatabaseContext();
-            var controller = new PeopleController(context, _mapper);
+            var controller = new PeopleController(context, _mapper, _mockLogger.Object);
 
             // Act
             var result = await controller.DeletePerson(1);

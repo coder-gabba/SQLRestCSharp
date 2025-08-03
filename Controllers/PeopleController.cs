@@ -19,11 +19,13 @@ namespace SqlAPI.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly ILogger<PeopleController> _logger;
 
-        public PeopleController(ApplicationDbContext context, IMapper mapper)
+        public PeopleController(ApplicationDbContext context, IMapper mapper, ILogger<PeopleController> logger)
         {
             _context = context;
             _mapper = mapper;
+            _logger = logger;
         }
 
         /// <summary>
@@ -33,8 +35,19 @@ namespace SqlAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PersonDto>>> GetPeople()
         {
-            var people = await _context.People.ToListAsync();
-            return Ok(_mapper.Map<IEnumerable<PersonDto>>(people));
+            try
+            {
+                _logger.LogInformation("Retrieving all people");
+                var people = await _context.People.ToListAsync();
+                var result = _mapper.Map<IEnumerable<PersonDto>>(people);
+                _logger.LogInformation("Successfully retrieved {Count} people", people.Count);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while retrieving all people");
+                return StatusCode(500, "An error occurred while retrieving people");
+            }
         }
 
         /// <summary>
@@ -45,12 +58,26 @@ namespace SqlAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<PersonDto>> GetPerson(int id)
         {
-            var person = await _context.People.FindAsync(id);
+            try
+            {
+                _logger.LogInformation("Retrieving person with ID {PersonId}", id);
+                var person = await _context.People.FindAsync(id);
 
-            if (person == null)
-                return NotFound($"Person with ID {id} not found");
+                if (person == null)
+                {
+                    _logger.LogWarning("Person with ID {PersonId} not found", id);
+                    return NotFound($"Person with ID {id} not found");
+                }
 
-            return Ok(_mapper.Map<PersonDto>(person));
+                var result = _mapper.Map<PersonDto>(person);
+                _logger.LogInformation("Successfully retrieved person with ID {PersonId}", id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while retrieving person with ID {PersonId}", id);
+                return StatusCode(500, "An error occurred while retrieving the person");
+            }
         }
 
         /// <summary>
@@ -61,13 +88,23 @@ namespace SqlAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<PersonDto>> PostPerson(PersonDto personDto)
         {
-            var person = _mapper.Map<Person>(personDto);
+            try
+            {
+                _logger.LogInformation("Creating new person with name {PersonName}", personDto.Name);
+                var person = _mapper.Map<Person>(personDto);
 
-            _context.People.Add(person);
-            await _context.SaveChangesAsync();
+                _context.People.Add(person);
+                await _context.SaveChangesAsync();
 
-            var createdPersonDto = _mapper.Map<PersonDto>(person);
-            return CreatedAtAction(nameof(GetPerson), new { id = createdPersonDto.Id }, createdPersonDto);
+                var createdPersonDto = _mapper.Map<PersonDto>(person);
+                _logger.LogInformation("Successfully created person with ID {PersonId}", createdPersonDto.Id);
+                return CreatedAtAction(nameof(GetPerson), new { id = createdPersonDto.Id }, createdPersonDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while creating person with name {PersonName}", personDto.Name);
+                return StatusCode(500, "An error occurred while creating the person");
+            }
         }
 
         /// <summary>
@@ -79,31 +116,47 @@ namespace SqlAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPerson(int id, PersonDto personDto)
         {
-            if (id != personDto.Id)
-                return BadRequest("ID mismatch between URL and request body");
-
-            var personInDb = await _context.People.FindAsync(id);
-            if (personInDb == null)
-            {
-                return NotFound($"Person with ID {id} not found");
-            }
-
-            _mapper.Map(personDto, personInDb);
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PersonExists(id))
+                if (id != personDto.Id)
                 {
+                    _logger.LogWarning("ID mismatch: URL ID {UrlId} does not match body ID {BodyId}", id, personDto.Id);
+                    return BadRequest("ID mismatch between URL and request body");
+                }
+
+                _logger.LogInformation("Updating person with ID {PersonId}", id);
+                var personInDb = await _context.People.FindAsync(id);
+                if (personInDb == null)
+                {
+                    _logger.LogWarning("Person with ID {PersonId} not found for update", id);
                     return NotFound($"Person with ID {id} not found");
                 }
-                throw;
-            }
 
-            return NoContent();
+                _mapper.Map(personDto, personInDb);
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation("Successfully updated person with ID {PersonId}", id);
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    _logger.LogWarning(ex, "Concurrency conflict while updating person with ID {PersonId}", id);
+                    if (!PersonExists(id))
+                    {
+                        _logger.LogWarning("Person with ID {PersonId} no longer exists after concurrency conflict", id);
+                        return NotFound($"Person with ID {id} not found");
+                    }
+                    throw;
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while updating person with ID {PersonId}", id);
+                return StatusCode(500, "An error occurred while updating the person");
+            }
         }
 
         /// <summary>
@@ -115,16 +168,27 @@ namespace SqlAPI.Controllers
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> DeletePerson(int id)
         {
-            var person = await _context.People.FindAsync(id);
-            if (person == null)
+            try
             {
-                return NotFound($"Person with ID {id} not found");
+                _logger.LogInformation("Deleting person with ID {PersonId}", id);
+                var person = await _context.People.FindAsync(id);
+                if (person == null)
+                {
+                    _logger.LogWarning("Person with ID {PersonId} not found for deletion", id);
+                    return NotFound($"Person with ID {id} not found");
+                }
+
+                _context.People.Remove(person);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Successfully deleted person with ID {PersonId}", id);
+                return NoContent();
             }
-
-            _context.People.Remove(person);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting person with ID {PersonId}", id);
+                return StatusCode(500, "An error occurred while deleting the person");
+            }
         }
 
         /// <summary>
