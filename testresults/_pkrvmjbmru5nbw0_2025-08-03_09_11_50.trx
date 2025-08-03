@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a13102e1-7314-4b73-af1f-b30ff96296a1" name="@pkrvmjbmru5nbw0 2025-08-03 09:11:50" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2025-08-03T09:11:50.1030413+00:00" queuing="2025-08-03T09:11:50.1030414+00:00" start="2025-08-03T09:11:49.0724230+00:00" finish="2025-08-03T09:11:50.9103969+00:00" />
+  <TestSettings name="default" id="ea43b246-4c81-4584-8a61-6d60a716da5e">
+    <Deployment runDeploymentRoot="_pkrvmjbmru5nbw0_2025-08-03_09_11_50" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="60981605-2761-4ae2-84cf-575e74049e3d" testId="f42d73db-78e3-6a75-c966-2ea228a6c4c7" testName="SqlAPI.Tests.Validators.AuthDtosValidatorTests.LoginDtoValidator_ValidData_ShouldPass" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0002670" startTime="2025-08-03T09:11:50.0540968+00:00" endTime="2025-08-03T09:11:50.0541918+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="60981605-2761-4ae2-84cf-575e74049e3d" />
+    <UnitTestResult executionId="c5475f2e-f73e-4a9c-a6cf-caecfe44953b" testId="1904fc0b-37e6-4c1d-d286-3bb6a71466ba" testName="SqlAPI.Tests.Validators.PersonDtoValidatorTests.Should_Have_Error_When_Age_Is_Outside_Valid_Range(name: &quot;Test Name&quot;, age: -1, email: &quot;test@test.com&quot;)" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0372588" startTime="2025-08-03T09:11:49.9483115+00:00" endTime="2025-08-03T09:11:49.9658414+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c5475f2e-f73e-4a9c-a6cf-caecfe44953b" />
+    <UnitTestResult executionId="f1b1a6af-730f-48f2-a938-11a8d886653e" testId="d7ce52f7-fc1c-ea30-a92d-001494c3b6e0" testName="SqlAPI.Tests.Validators.AuthDtosValidatorTests.RegisterDtoValidator_InvalidRole_ShouldFail" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0010448" startTime="2025-08-03T09:11:50.0537250+00:00" endTime="2025-08-03T09:11:50.0538436+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f1b1a6af-730f-48f2-a938-11a8d886653e" />
+    <UnitTestResult executionId="a3e155ad-de35-4ab4-945c-33cc5c4bb6a0" testId="e8ad2ef2-aa0e-2acb-8dac-8f56bb269f6d" testName="SqlAPI.Tests.Validators.PersonDtoValidatorTests.Should_Have_Error_When_Name_Is_Null_Or_Empty(name: null, age: 30, email: &quot;test@test.com&quot;)" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0004136" startTime="2025-08-03T09:11:49.9680441+00:00" endTime="2025-08-03T09:11:49.9681817+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a3e155ad-de35-4ab4-945c-33cc5c4bb6a0" />
+    <UnitTestResult executionId="89ddd6e4-fa81-401e-894d-5e5e44f376cd" testId="a9097c27-cc7c-02be-29dd-cfa0c6fffc88" testName="SqlAPI.Tests.Controllers.PeopleControllerTests.GetPeople_ShouldReturnAllPeople" computerName="pkrvmjbmru5nbw0" duration="00:00:00.8591921" startTime="2025-08-03T09:11:49.8419106+00:00" endTime="2025-08-03T09:11:50.7049546+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="89ddd6e4-fa81-401e-894d-5e5e44f376cd" />
+    <UnitTestResult executionId="94b94b65-fe04-4ad3-8632-1c9a16d95ca6" testId="dded6554-7a15-d758-0801-5ad7d039e0e8" testName="SqlAPI.Tests.Validators.PersonDtoValidatorTests.Should_Have_Error_When_Email_Is_Invalid(name: &quot;Test Name&quot;, age: 30, email: &quot;not-an-email&quot;)" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0008673" startTime="2025-08-03T09:11:49.9685304+00:00" endTime="2025-08-03T09:11:49.9715619+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="94b94b65-fe04-4ad3-8632-1c9a16d95ca6" />
+    <UnitTestResult executionId="85bc82e5-fc4b-4c77-989e-5389b46359ce" testId="1d809205-c52c-bedf-14d5-0520794ab60b" testName="SqlAPI.Tests.Validators.AuthDtosValidatorTests.LoginDtoValidator_EmptyUsername_ShouldFail" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0009768" startTime="2025-08-03T09:11:50.0529230+00:00" endTime="2025-08-03T09:11:50.0530299+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="85bc82e5-fc4b-4c77-989e-5389b46359ce" />
+    <UnitTestResult executionId="4101a0d9-6233-4baf-bbaf-352e0d884180" testId="8671e553-adfb-87a6-8427-166fc0de445c" testName="SqlAPI.Tests.Validators.AuthDtosValidatorTests.RegisterDtoValidator_PasswordMismatch_ShouldFail" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0042283" startTime="2025-08-03T09:11:50.0548948+00:00" endTime="2025-08-03T09:11:50.0550039+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4101a0d9-6233-4baf-bbaf-352e0d884180" />
+    <UnitTestResult executionId="1f92dea8-de02-4c92-ae51-a5ae56756658" testId="43fb38b2-506e-a5b1-ea2c-47e0bdc490f8" testName="SqlAPI.Tests.Validators.PersonDtoValidatorTests.Should_Not_Have_Error_When_Dto_Is_Valid" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0706698" startTime="2025-08-03T09:11:49.8444121+00:00" endTime="2025-08-03T09:11:49.9247434+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1f92dea8-de02-4c92-ae51-a5ae56756658" />
+    <UnitTestResult executionId="7ff7454f-2b03-437a-b19d-59dcde21358e" testId="2e1f003e-6aa8-dfba-5bc4-cbe8a2638ebe" testName="SqlAPI.Tests.Validators.AuthDtosValidatorTests.LoginDtoValidator_EmptyPassword_ShouldFail" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0063775" startTime="2025-08-03T09:11:50.0521619+00:00" endTime="2025-08-03T09:11:50.0526007+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7ff7454f-2b03-437a-b19d-59dcde21358e" />
+    <UnitTestResult executionId="051228bf-f1e4-4ff5-9207-419b441c7adf" testId="d568d3a3-6584-d44a-44cb-a2cc1e3b6722" testName="SqlAPI.Tests.Validators.PersonDtoValidatorTests.Should_Have_Error_When_Name_Is_Null_Or_Empty(name: &quot;  &quot;, age: 30, email: &quot;test@test.com&quot;)" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0006609" startTime="2025-08-03T09:11:49.9676954+00:00" endTime="2025-08-03T09:11:49.9678210+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="051228bf-f1e4-4ff5-9207-419b441c7adf" />
+    <UnitTestResult executionId="18810cd5-eda5-4809-91b0-078ac9159d06" testId="89b35b89-f529-e956-ce3a-4f6a508c3528" testName="SqlAPI.Tests.Controllers.PeopleControllerTests.GetPerson_WithInvalidId_ShouldReturnNotFound" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0322387" startTime="2025-08-03T09:11:50.7770492+00:00" endTime="2025-08-03T09:11:50.8090865+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="18810cd5-eda5-4809-91b0-078ac9159d06" />
+    <UnitTestResult executionId="3fd4ab40-4e74-4259-9e3e-188edbb4a723" testId="0421a1da-ce49-7ea6-ded7-25db25bc2993" testName="SqlAPI.Tests.Controllers.PeopleControllerTests.PutPerson_WithValidDto_ShouldUpdatePerson" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0096301" startTime="2025-08-03T09:11:50.8093381+00:00" endTime="2025-08-03T09:11:50.8188064+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3fd4ab40-4e74-4259-9e3e-188edbb4a723" />
+    <UnitTestResult executionId="a39fa8a3-351f-420d-a1de-d8c0bf0b1627" testId="a4d37fbc-1fa3-3581-1ad8-0d0117f92555" testName="SqlAPI.Tests.Validators.PersonDtoValidatorTests.Should_Have_Error_When_Email_Is_Invalid(name: &quot;Test Name&quot;, age: 30, email: &quot;&quot;)" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0004783" startTime="2025-08-03T09:11:50.0483435+00:00" endTime="2025-08-03T09:11:50.0484943+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a39fa8a3-351f-420d-a1de-d8c0bf0b1627" />
+    <UnitTestResult executionId="eb67025e-f155-4d38-bf79-bcbd2764dc57" testId="2621ebe8-8924-298f-781b-8dbd58c51948" testName="SqlAPI.Tests.Validators.PersonDtoValidatorTests.Should_Have_Error_When_Email_Is_Invalid(name: &quot;Test Name&quot;, age: 30, email: null)" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0138118" startTime="2025-08-03T09:11:49.9718630+00:00" endTime="2025-08-03T09:11:49.9832642+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eb67025e-f155-4d38-bf79-bcbd2764dc57" />
+    <UnitTestResult executionId="35e8645a-07be-4bf4-8125-02eabdb5307e" testId="c0266ae9-f6b8-2d64-dbf6-65e2573eedd1" testName="SqlAPI.Tests.Validators.AuthDtosValidatorTests.RegisterDtoValidator_InvalidUsername_ShouldFail" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0203390" startTime="2025-08-03T09:11:50.0532743+00:00" endTime="2025-08-03T09:11:50.0534265+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="35e8645a-07be-4bf4-8125-02eabdb5307e" />
+    <UnitTestResult executionId="defe2f7b-cf5e-42f0-b574-04315d06cfbb" testId="20337945-759b-9188-9b30-e1e081e552e2" testName="SqlAPI.Tests.Validators.PersonDtoValidatorTests.Should_Have_Error_When_Age_Is_Outside_Valid_Range(name: &quot;Test Name&quot;, age: 151, email: &quot;test@test.com&quot;)" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0009270" startTime="2025-08-03T09:11:49.9668198+00:00" endTime="2025-08-03T09:11:49.9669604+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="defe2f7b-cf5e-42f0-b574-04315d06cfbb" />
+    <UnitTestResult executionId="e4080540-5282-483b-8aa7-7ef33e6b2acf" testId="25b48220-2ff4-f1f4-1e35-2136accede9b" testName="SqlAPI.Tests.UnitTest1.Test1" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0002104" startTime="2025-08-03T09:11:50.0520598+00:00" endTime="2025-08-03T09:11:50.0522700+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e4080540-5282-483b-8aa7-7ef33e6b2acf" />
+    <UnitTestResult executionId="fd530828-6ea8-494d-bd20-bbf61692e050" testId="30b57b6e-be45-6ff5-3423-4d043a43d7d7" testName="SqlAPI.Tests.Controllers.PeopleControllerTests.PostPerson_WithValidDto_ShouldCreatePerson" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0119135" startTime="2025-08-03T09:11:50.8218778+00:00" endTime="2025-08-03T09:11:50.8336145+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fd530828-6ea8-494d-bd20-bbf61692e050" />
+    <UnitTestResult executionId="b927ddb8-51c1-4971-8d3a-a025c162d176" testId="b883e966-a40e-e632-62b8-b36be4ecf52a" testName="SqlAPI.Tests.Validators.PersonDtoValidatorTests.Should_Have_Error_When_Name_Is_Null_Or_Empty(name: &quot;&quot;, age: 30, email: &quot;test@test.com&quot;)" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0020991" startTime="2025-08-03T09:11:49.9673114+00:00" endTime="2025-08-03T09:11:49.9674364+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b927ddb8-51c1-4971-8d3a-a025c162d176" />
+    <UnitTestResult executionId="ee5cb912-e284-4ce3-87ad-26fd470be874" testId="8423541e-5b90-5daf-1c6b-58e3a8d5973a" testName="SqlAPI.Tests.Controllers.PeopleControllerTests.GetPerson_WithValidId_ShouldReturnPerson" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0027589" startTime="2025-08-03T09:11:50.8190391+00:00" endTime="2025-08-03T09:11:50.8216263+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ee5cb912-e284-4ce3-87ad-26fd470be874" />
+    <UnitTestResult executionId="fb2fc747-9e06-47cb-9896-157319abb3b2" testId="ca2ddf20-eab8-9db4-a1f5-09823849fd45" testName="SqlAPI.Tests.Controllers.PeopleControllerTests.DeletePerson_WithValidId_ShouldRemovePerson" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0717657" startTime="2025-08-03T09:11:50.7053913+00:00" endTime="2025-08-03T09:11:50.7767803+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fb2fc747-9e06-47cb-9896-157319abb3b2" />
+    <UnitTestResult executionId="612e161d-a03a-4427-9881-605443601b09" testId="59eff32c-51d4-e25a-45cd-87b9604c877b" testName="SqlAPI.Tests.Validators.AuthDtosValidatorTests.RegisterDtoValidator_ValidData_ShouldPass" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0004202" startTime="2025-08-03T09:11:50.0580876+00:00" endTime="2025-08-03T09:11:50.0582355+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="612e161d-a03a-4427-9881-605443601b09" />
+    <UnitTestResult executionId="c19f1497-a222-4348-8947-e8ba785dd97b" testId="cf17512a-7638-fa9e-faca-18c3e33b83b8" testName="SqlAPI.Tests.Validators.AuthDtosValidatorTests.RegisterDtoValidator_WeakPassword_ShouldFail" computerName="pkrvmjbmru5nbw0" duration="00:00:00.0009636" startTime="2025-08-03T09:11:50.0544701+00:00" endTime="2025-08-03T09:11:50.0545821+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c19f1497-a222-4348-8947-e8ba785dd97b" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="SqlAPI.Tests.Validators.AuthDtosValidatorTests.LoginDtoValidator_EmptyPassword_ShouldFail" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="2e1f003e-6aa8-dfba-5bc4-cbe8a2638ebe">
+      <Execution id="7ff7454f-2b03-437a-b19d-59dcde21358e" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Validators.AuthDtosValidatorTests" name="LoginDtoValidator_EmptyPassword_ShouldFail" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Validators.PersonDtoValidatorTests.Should_Have_Error_When_Age_Is_Outside_Valid_Range(name: &quot;Test Name&quot;, age: 151, email: &quot;test@test.com&quot;)" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="20337945-759b-9188-9b30-e1e081e552e2">
+      <Execution id="defe2f7b-cf5e-42f0-b574-04315d06cfbb" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Validators.PersonDtoValidatorTests" name="Should_Have_Error_When_Age_Is_Outside_Valid_Range" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Validators.PersonDtoValidatorTests.Should_Have_Error_When_Email_Is_Invalid(name: &quot;Test Name&quot;, age: 30, email: &quot;&quot;)" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="a4d37fbc-1fa3-3581-1ad8-0d0117f92555">
+      <Execution id="a39fa8a3-351f-420d-a1de-d8c0bf0b1627" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Validators.PersonDtoValidatorTests" name="Should_Have_Error_When_Email_Is_Invalid" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Validators.PersonDtoValidatorTests.Should_Not_Have_Error_When_Dto_Is_Valid" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="43fb38b2-506e-a5b1-ea2c-47e0bdc490f8">
+      <Execution id="1f92dea8-de02-4c92-ae51-a5ae56756658" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Validators.PersonDtoValidatorTests" name="Should_Not_Have_Error_When_Dto_Is_Valid" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Validators.AuthDtosValidatorTests.RegisterDtoValidator_InvalidUsername_ShouldFail" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="c0266ae9-f6b8-2d64-dbf6-65e2573eedd1">
+      <Execution id="35e8645a-07be-4bf4-8125-02eabdb5307e" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Validators.AuthDtosValidatorTests" name="RegisterDtoValidator_InvalidUsername_ShouldFail" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Validators.PersonDtoValidatorTests.Should_Have_Error_When_Name_Is_Null_Or_Empty(name: null, age: 30, email: &quot;test@test.com&quot;)" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="e8ad2ef2-aa0e-2acb-8dac-8f56bb269f6d">
+      <Execution id="a3e155ad-de35-4ab4-945c-33cc5c4bb6a0" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Validators.PersonDtoValidatorTests" name="Should_Have_Error_When_Name_Is_Null_Or_Empty" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Controllers.PeopleControllerTests.DeletePerson_WithValidId_ShouldRemovePerson" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="ca2ddf20-eab8-9db4-a1f5-09823849fd45">
+      <Execution id="fb2fc747-9e06-47cb-9896-157319abb3b2" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Controllers.PeopleControllerTests" name="DeletePerson_WithValidId_ShouldRemovePerson" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Validators.AuthDtosValidatorTests.RegisterDtoValidator_WeakPassword_ShouldFail" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="cf17512a-7638-fa9e-faca-18c3e33b83b8">
+      <Execution id="c19f1497-a222-4348-8947-e8ba785dd97b" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Validators.AuthDtosValidatorTests" name="RegisterDtoValidator_WeakPassword_ShouldFail" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Validators.AuthDtosValidatorTests.RegisterDtoValidator_InvalidRole_ShouldFail" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="d7ce52f7-fc1c-ea30-a92d-001494c3b6e0">
+      <Execution id="f1b1a6af-730f-48f2-a938-11a8d886653e" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Validators.AuthDtosValidatorTests" name="RegisterDtoValidator_InvalidRole_ShouldFail" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Controllers.PeopleControllerTests.PostPerson_WithValidDto_ShouldCreatePerson" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="30b57b6e-be45-6ff5-3423-4d043a43d7d7">
+      <Execution id="fd530828-6ea8-494d-bd20-bbf61692e050" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Controllers.PeopleControllerTests" name="PostPerson_WithValidDto_ShouldCreatePerson" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Validators.PersonDtoValidatorTests.Should_Have_Error_When_Name_Is_Null_Or_Empty(name: &quot;  &quot;, age: 30, email: &quot;test@test.com&quot;)" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="d568d3a3-6584-d44a-44cb-a2cc1e3b6722">
+      <Execution id="051228bf-f1e4-4ff5-9207-419b441c7adf" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Validators.PersonDtoValidatorTests" name="Should_Have_Error_When_Name_Is_Null_Or_Empty" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Validators.PersonDtoValidatorTests.Should_Have_Error_When_Age_Is_Outside_Valid_Range(name: &quot;Test Name&quot;, age: -1, email: &quot;test@test.com&quot;)" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="1904fc0b-37e6-4c1d-d286-3bb6a71466ba">
+      <Execution id="c5475f2e-f73e-4a9c-a6cf-caecfe44953b" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Validators.PersonDtoValidatorTests" name="Should_Have_Error_When_Age_Is_Outside_Valid_Range" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Controllers.PeopleControllerTests.GetPerson_WithValidId_ShouldReturnPerson" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="8423541e-5b90-5daf-1c6b-58e3a8d5973a">
+      <Execution id="ee5cb912-e284-4ce3-87ad-26fd470be874" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Controllers.PeopleControllerTests" name="GetPerson_WithValidId_ShouldReturnPerson" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Controllers.PeopleControllerTests.GetPeople_ShouldReturnAllPeople" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="a9097c27-cc7c-02be-29dd-cfa0c6fffc88">
+      <Execution id="89ddd6e4-fa81-401e-894d-5e5e44f376cd" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Controllers.PeopleControllerTests" name="GetPeople_ShouldReturnAllPeople" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Validators.AuthDtosValidatorTests.LoginDtoValidator_ValidData_ShouldPass" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="f42d73db-78e3-6a75-c966-2ea228a6c4c7">
+      <Execution id="60981605-2761-4ae2-84cf-575e74049e3d" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Validators.AuthDtosValidatorTests" name="LoginDtoValidator_ValidData_ShouldPass" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Controllers.PeopleControllerTests.GetPerson_WithInvalidId_ShouldReturnNotFound" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="89b35b89-f529-e956-ce3a-4f6a508c3528">
+      <Execution id="18810cd5-eda5-4809-91b0-078ac9159d06" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Controllers.PeopleControllerTests" name="GetPerson_WithInvalidId_ShouldReturnNotFound" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Validators.AuthDtosValidatorTests.LoginDtoValidator_EmptyUsername_ShouldFail" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="1d809205-c52c-bedf-14d5-0520794ab60b">
+      <Execution id="85bc82e5-fc4b-4c77-989e-5389b46359ce" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Validators.AuthDtosValidatorTests" name="LoginDtoValidator_EmptyUsername_ShouldFail" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Controllers.PeopleControllerTests.PutPerson_WithValidDto_ShouldUpdatePerson" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="0421a1da-ce49-7ea6-ded7-25db25bc2993">
+      <Execution id="3fd4ab40-4e74-4259-9e3e-188edbb4a723" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Controllers.PeopleControllerTests" name="PutPerson_WithValidDto_ShouldUpdatePerson" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Validators.PersonDtoValidatorTests.Should_Have_Error_When_Email_Is_Invalid(name: &quot;Test Name&quot;, age: 30, email: null)" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="2621ebe8-8924-298f-781b-8dbd58c51948">
+      <Execution id="eb67025e-f155-4d38-bf79-bcbd2764dc57" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Validators.PersonDtoValidatorTests" name="Should_Have_Error_When_Email_Is_Invalid" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Validators.AuthDtosValidatorTests.RegisterDtoValidator_ValidData_ShouldPass" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="59eff32c-51d4-e25a-45cd-87b9604c877b">
+      <Execution id="612e161d-a03a-4427-9881-605443601b09" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Validators.AuthDtosValidatorTests" name="RegisterDtoValidator_ValidData_ShouldPass" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Validators.PersonDtoValidatorTests.Should_Have_Error_When_Name_Is_Null_Or_Empty(name: &quot;&quot;, age: 30, email: &quot;test@test.com&quot;)" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="b883e966-a40e-e632-62b8-b36be4ecf52a">
+      <Execution id="b927ddb8-51c1-4971-8d3a-a025c162d176" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Validators.PersonDtoValidatorTests" name="Should_Have_Error_When_Name_Is_Null_Or_Empty" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Validators.AuthDtosValidatorTests.RegisterDtoValidator_PasswordMismatch_ShouldFail" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="8671e553-adfb-87a6-8427-166fc0de445c">
+      <Execution id="4101a0d9-6233-4baf-bbaf-352e0d884180" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Validators.AuthDtosValidatorTests" name="RegisterDtoValidator_PasswordMismatch_ShouldFail" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.UnitTest1.Test1" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="25b48220-2ff4-f1f4-1e35-2136accede9b">
+      <Execution id="e4080540-5282-483b-8aa7-7ef33e6b2acf" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.UnitTest1" name="Test1" />
+    </UnitTest>
+    <UnitTest name="SqlAPI.Tests.Validators.PersonDtoValidatorTests.Should_Have_Error_When_Email_Is_Invalid(name: &quot;Test Name&quot;, age: 30, email: &quot;not-an-email&quot;)" storage="/home/runner/work/sqlrestcsharp/sqlrestcsharp/tests/bin/debug/net8.0/sqlapi.tests.dll" id="dded6554-7a15-d758-0801-5ad7d039e0e8">
+      <Execution id="94b94b65-fe04-4ad3-8632-1c9a16d95ca6" />
+      <TestMethod codeBase="/home/runner/work/SQLRestCSharp/SQLRestCSharp/tests/bin/Debug/net8.0/SqlAPI.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="SqlAPI.Tests.Validators.PersonDtoValidatorTests" name="Should_Have_Error_When_Email_Is_Invalid" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="f42d73db-78e3-6a75-c966-2ea228a6c4c7" executionId="60981605-2761-4ae2-84cf-575e74049e3d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1904fc0b-37e6-4c1d-d286-3bb6a71466ba" executionId="c5475f2e-f73e-4a9c-a6cf-caecfe44953b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d7ce52f7-fc1c-ea30-a92d-001494c3b6e0" executionId="f1b1a6af-730f-48f2-a938-11a8d886653e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e8ad2ef2-aa0e-2acb-8dac-8f56bb269f6d" executionId="a3e155ad-de35-4ab4-945c-33cc5c4bb6a0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a9097c27-cc7c-02be-29dd-cfa0c6fffc88" executionId="89ddd6e4-fa81-401e-894d-5e5e44f376cd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dded6554-7a15-d758-0801-5ad7d039e0e8" executionId="94b94b65-fe04-4ad3-8632-1c9a16d95ca6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1d809205-c52c-bedf-14d5-0520794ab60b" executionId="85bc82e5-fc4b-4c77-989e-5389b46359ce" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8671e553-adfb-87a6-8427-166fc0de445c" executionId="4101a0d9-6233-4baf-bbaf-352e0d884180" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="43fb38b2-506e-a5b1-ea2c-47e0bdc490f8" executionId="1f92dea8-de02-4c92-ae51-a5ae56756658" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2e1f003e-6aa8-dfba-5bc4-cbe8a2638ebe" executionId="7ff7454f-2b03-437a-b19d-59dcde21358e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d568d3a3-6584-d44a-44cb-a2cc1e3b6722" executionId="051228bf-f1e4-4ff5-9207-419b441c7adf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="89b35b89-f529-e956-ce3a-4f6a508c3528" executionId="18810cd5-eda5-4809-91b0-078ac9159d06" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0421a1da-ce49-7ea6-ded7-25db25bc2993" executionId="3fd4ab40-4e74-4259-9e3e-188edbb4a723" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a4d37fbc-1fa3-3581-1ad8-0d0117f92555" executionId="a39fa8a3-351f-420d-a1de-d8c0bf0b1627" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2621ebe8-8924-298f-781b-8dbd58c51948" executionId="eb67025e-f155-4d38-bf79-bcbd2764dc57" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c0266ae9-f6b8-2d64-dbf6-65e2573eedd1" executionId="35e8645a-07be-4bf4-8125-02eabdb5307e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="20337945-759b-9188-9b30-e1e081e552e2" executionId="defe2f7b-cf5e-42f0-b574-04315d06cfbb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="25b48220-2ff4-f1f4-1e35-2136accede9b" executionId="e4080540-5282-483b-8aa7-7ef33e6b2acf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="30b57b6e-be45-6ff5-3423-4d043a43d7d7" executionId="fd530828-6ea8-494d-bd20-bbf61692e050" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b883e966-a40e-e632-62b8-b36be4ecf52a" executionId="b927ddb8-51c1-4971-8d3a-a025c162d176" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8423541e-5b90-5daf-1c6b-58e3a8d5973a" executionId="ee5cb912-e284-4ce3-87ad-26fd470be874" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ca2ddf20-eab8-9db4-a1f5-09823849fd45" executionId="fb2fc747-9e06-47cb-9896-157319abb3b2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="59eff32c-51d4-e25a-45cd-87b9604c877b" executionId="612e161d-a03a-4427-9881-605443601b09" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cf17512a-7638-fa9e-faca-18c3e33b83b8" executionId="c19f1497-a222-4348-8947-e8ba785dd97b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="24" executed="24" passed="24" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.3+b1b99bdeb3 (64-bit .NET 8.0.18)
+[xUnit.net 00:00:00.10]   Discovering: SqlAPI.Tests
+[xUnit.net 00:00:00.16]   Discovered:  SqlAPI.Tests
+[xUnit.net 00:00:00.20]   Starting:    SqlAPI.Tests
+[xUnit.net 00:00:01.23]   Finished:    SqlAPI.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

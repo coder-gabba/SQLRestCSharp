@@ -62,36 +62,64 @@ static async Task InitializeDatabaseAsync()
     using var loggerFactory = LoggerFactory.Create(builder => builder.AddSerilog());
     var logger = loggerFactory.CreateLogger<PostgreSqlDatabaseHandler>();
     
-    var dbHandler = new PostgreSqlDatabaseHandler(connectionString, logger);
-    
-    Log.Information("Initializing database schema...");
-    await dbHandler.CreateTableAsync<SqlAPI.Models.Person>();
-    await dbHandler.CreateTableAsync<SqlAPI.Models.User>();
-    Log.Information("Database tables ready");
-
-    // Development test data
-    if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+    try
     {
-        Log.Information("Development mode - checking for test data");
-        var existingPeople = await dbHandler.GetAllAsync<SqlAPI.Models.Person>();
-        if (!existingPeople.Any())
-        {
-            Log.Information("No test data found - inserting sample person");
-            await dbHandler.InsertAndCloseAsync(new SqlAPI.Models.Person
-            {
-                Name = "Max Mustermann",
-                Age = 30,
-                Email = "max@mustermann.de"
-            });
-            Log.Information("Sample data inserted");
-        }
-        else
-        {
-            Log.Information($"Found {existingPeople.Count} existing person records");
-        }
-    }
+        var dbHandler = new PostgreSqlDatabaseHandler(connectionString, logger);
+        
+        Log.Information("Initializing database schema...");
+        await dbHandler.CreateTableAsync<SqlAPI.Models.Person>();
+        await dbHandler.CreateTableAsync<SqlAPI.Models.User>();
+        Log.Information("Database tables ready");
 
-    Log.Information("Database initialization complete");
+        // Development test data
+        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+        {
+            Log.Information("Development mode - checking for test data");
+            try
+            {
+                var existingPeople = await dbHandler.GetAllAsync<SqlAPI.Models.Person>();
+                if (!existingPeople.Any())
+                {
+                    Log.Information("No test data found - inserting sample person");
+                    await dbHandler.InsertAndCloseAsync(new SqlAPI.Models.Person
+                    {
+                        Name = "Max Mustermann",
+                        Age = 30,
+                        Email = "max@mustermann.de"
+                    });
+                    Log.Information("Sample data inserted");
+                }
+                else
+                {
+                    Log.Information($"Found {existingPeople.Count} existing person records");
+                }
+
+                // Add a test user if none exists
+                var existingUsers = await dbHandler.GetAllAsync<SqlAPI.Models.User>();
+                if (!existingUsers.Any())
+                {
+                    Log.Information("No test users found - inserting sample user");
+                    await dbHandler.InsertAndCloseAsync(new SqlAPI.Models.User
+                    {
+                        Username = "admin",
+                        PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123"),
+                        Role = "Admin"
+                    });
+                    Log.Information("Sample user inserted");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Could not insert test data - continuing without test data");
+            }
+        }
+
+        Log.Information("Database initialization complete");
+    }
+    catch (Exception ex)
+    {
+        Log.Warning(ex, "Database initialization failed - continuing without database");
+    }
 }
 
 static void ConfigureServices(IServiceCollection services)
