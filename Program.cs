@@ -5,19 +5,22 @@ using dotenv.net;
 using System.Text;
 using SqlAPI.Data;
 using SqlAPI.Services;
+using SqlAPI.Middleware;
 using Serilog;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using System.Reflection;
+using Polly;
+using Polly.Extensions.Http;
 
 // Load environment variables from .env file
 DotEnv.Load();
 
-// Configure Serilog for structured logging
+// Configure Serilog for structured logging from appsettings.json
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Debug()
-    .WriteTo.Console()
-    .WriteTo.File("logs/sqlapi-.txt", rollingInterval: RollingInterval.Day)
+    .ReadFrom.Configuration(new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build())
     .CreateLogger();
 
 // Database initialization
@@ -53,36 +56,70 @@ finally
 
 static async Task InitializeDatabaseAsync()
 {
-    var dbHandler = new PostgreSqlDatabaseHandler(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")!);
+    var connectionString = Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")!;
     
-    Log.Information("Initializing database schema...");
-    await dbHandler.CreateTableAsync<SqlAPI.Models.Person>();
-    await dbHandler.CreateTableAsync<SqlAPI.Models.User>();
-    Log.Information("Database tables ready");
-
-    // Development test data
-    if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+    // Create a temporary logger for database initialization
+    using var loggerFactory = LoggerFactory.Create(builder => builder.AddSerilog());
+    var logger = loggerFactory.CreateLogger<PostgreSqlDatabaseHandler>();
+    
+    try
     {
-        Log.Information("Development mode - checking for test data");
-        var existingPeople = await dbHandler.GetAllAsync<SqlAPI.Models.Person>();
-        if (!existingPeople.Any())
-        {
-            Log.Information("No test data found - inserting sample person");
-            await dbHandler.InsertAndCloseAsync(new SqlAPI.Models.Person
-            {
-                Name = "Max Mustermann",
-                Age = 30,
-                Email = "max@mustermann.de"
-            });
-            Log.Information("Sample data inserted");
-        }
-        else
-        {
-            Log.Information($"Found {existingPeople.Count} existing person records");
-        }
-    }
+        var dbHandler = new PostgreSqlDatabaseHandler(connectionString, logger);
+        
+        Log.Information("Initializing database schema...");
+        await dbHandler.CreateTableAsync<SqlAPI.Models.Person>();
+        await dbHandler.CreateTableAsync<SqlAPI.Models.User>();
+        Log.Information("Database tables ready");
 
-    Log.Information("Database initialization complete");
+        // Development test data
+        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+        {
+            Log.Information("Development mode - checking for test data");
+            try
+            {
+                var existingPeople = await dbHandler.GetAllAsync<SqlAPI.Models.Person>();
+                if (!existingPeople.Any())
+                {
+                    Log.Information("No test data found - inserting sample person");
+                    await dbHandler.InsertAndCloseAsync(new SqlAPI.Models.Person
+                    {
+                        Name = "Max Mustermann",
+                        Age = 30,
+                        Email = "max@mustermann.de"
+                    });
+                    Log.Information("Sample data inserted");
+                }
+                else
+                {
+                    Log.Information($"Found {existingPeople.Count} existing person records");
+                }
+
+                // Add a test user if none exists
+                var existingUsers = await dbHandler.GetAllAsync<SqlAPI.Models.User>();
+                if (!existingUsers.Any())
+                {
+                    Log.Information("No test users found - inserting sample user");
+                    await dbHandler.InsertAndCloseAsync(new SqlAPI.Models.User
+                    {
+                        Username = "admin",
+                        PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123"),
+                        Role = "Admin"
+                    });
+                    Log.Information("Sample user inserted");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Could not insert test data - continuing without test data");
+            }
+        }
+
+        Log.Information("Database initialization complete");
+    }
+    catch (Exception ex)
+    {
+        Log.Warning(ex, "Database initialization failed - continuing without database");
+    }
 }
 
 static void ConfigureServices(IServiceCollection services)
@@ -119,9 +156,19 @@ static void ConfigureServices(IServiceCollection services)
         }
     });
 
+    // Add Polly for resilience
+    services.AddHttpClient("DefaultClient")
+        .AddPolicyHandler(HttpPolicyExtensions
+            .HandleTransientHttpError()
+            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))));
+
     // Register custom services
     services.AddSingleton<JwtService>();
-    services.AddSingleton(new PostgreSqlDatabaseHandler(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")!));
+    services.AddSingleton(serviceProvider =>
+    {
+        var logger = serviceProvider.GetRequiredService<ILogger<PostgreSqlDatabaseHandler>>();
+        return new PostgreSqlDatabaseHandler(Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")!, logger);
+    });
 
     // Configure JWT authentication
     var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY")
@@ -156,6 +203,12 @@ static void ConfigureServices(IServiceCollection services)
 
 static void ConfigurePipeline(WebApplication app)
 {
+    // Use the custom global exception handler
+    app.UseMiddleware<GlobalExceptionHandler>();
+
+    // Add Serilog's request logging
+    app.UseSerilogRequestLogging();
+
     // Configure the HTTP request pipeline
     if (app.Environment.IsDevelopment())
     {

@@ -1,35 +1,49 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 
 namespace SqlAPI.Data
 {
     /// <summary>
     /// Ein typsicherer, generischer Datenbank-Handler für PostgreSQL, der grundlegende CRUD-Operationen bereitstellt.
+    /// Optimiert mit Caching für bessere Performance.
     /// </summary>
     public class PostgreSqlDatabaseHandler : IDisposable
     {
+        // --- Caching for Reflection Performance ---
+        private static readonly ConcurrentDictionary<Type, string> TableNameCache = new();
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> PropertiesCache = new();
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> NonIdPropertiesCache = new();
+        private static readonly ConcurrentDictionary<Type, PropertyInfo?> IdPropertyCache = new();
+
         private readonly string _connectionString;
+        private readonly ILogger<PostgreSqlDatabaseHandler> _logger;
         private NpgsqlConnection? _connection;
         private NpgsqlTransaction? _transaction;
         private bool _disposed = false;
 
-        public PostgreSqlDatabaseHandler(string connectionString)
+        public PostgreSqlDatabaseHandler(string connectionString, ILogger<PostgreSqlDatabaseHandler> logger)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+            _logger = logger;
             _connection = new NpgsqlConnection(_connectionString);
         }
 
-        // --- Verbindungs- und Transaktionsmanagement (unverändert) ---
+        // --- Verbindungs- und Transaktionsmanagement ---
         public async Task OpenConnectionAsync()
         {
             if (_connection != null && _connection.State != ConnectionState.Open)
             {
+                _logger.LogDebug("Opening database connection");
                 await _connection.OpenAsync();
+                _logger.LogDebug("Database connection opened successfully");
             }
         }
 
@@ -37,16 +51,20 @@ namespace SqlAPI.Data
         {
             if (_connection != null && _connection.State == ConnectionState.Open)
             {
+                _logger.LogDebug("Closing database connection");
                 await _connection.CloseAsync();
+                _logger.LogDebug("Database connection closed successfully");
             }
         }
         
         public async Task<NpgsqlTransaction> BeginTransactionAsync()
         {
+            _logger.LogDebug("Beginning database transaction");
             await OpenConnectionAsync();
             if (_connection == null)
                 throw new InvalidOperationException("Database connection is not available.");
             _transaction = await _connection.BeginTransactionAsync();
+            _logger.LogInformation("Database transaction started");
             return _transaction;
         }
 
@@ -54,9 +72,11 @@ namespace SqlAPI.Data
         {
             if (_transaction != null)
             {
+                _logger.LogDebug("Committing database transaction");
                 await _transaction.CommitAsync();
                 _transaction?.Dispose();
                 _transaction = null;
+                _logger.LogInformation("Database transaction committed successfully");
             }
         }
 
@@ -64,43 +84,69 @@ namespace SqlAPI.Data
         {
             if (_transaction != null)
             {
+                _logger.LogWarning("Rolling back database transaction");
                 await _transaction.RollbackAsync();
                 _transaction = null;
+                _logger.LogInformation("Database transaction rolled back");
             }
         }
 
-        // --- Low-Level Ausführungsmethoden (bleiben für komplexe Fälle erhalten) ---
+        // --- Low-Level Ausführungsmethoden ---
         public async Task<DataTable> ExecuteQueryAsync(string sql, Dictionary<string, object>? parameters = null)
         {
+            _logger.LogDebug("Executing query: {Sql}", sql);
             await OpenConnectionAsync();
             var dataTable = new DataTable();
             using (var command = CreateCommand(sql, parameters))
             using (var reader = await command.ExecuteReaderAsync())
             {
                 dataTable.Load(reader);
+                _logger.LogInformation("Query executed successfully. {RowCount} rows returned.", dataTable.Rows.Count);
             }
             return dataTable;
         }
 
         public async Task<object?> ExecuteScalarAsync(string sql, Dictionary<string, object>? parameters = null)
         {
+            _logger.LogDebug("Executing scalar query: {Sql}", sql);
             await OpenConnectionAsync();
             using (var command = CreateCommand(sql, parameters))
             {
-                return await command.ExecuteScalarAsync();
+                try
+                {
+                    var result = await command.ExecuteScalarAsync();
+                    _logger.LogInformation("Scalar query executed successfully. Result: {Result}", result);
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error executing scalar query: {Sql}", sql);
+                    throw;
+                }
             }
         }
 
         public async Task<int> ExecuteNonQueryAsync(string sql, Dictionary<string, object>? parameters = null)
         {
+            _logger.LogDebug("Executing NonQuery: {Sql}", sql);
             await OpenConnectionAsync();
             using (var command = CreateCommand(sql, parameters))
             {
-                return await command.ExecuteNonQueryAsync();
+                try
+                {
+                    var affectedRows = await command.ExecuteNonQueryAsync();
+                    _logger.LogInformation("NonQuery executed successfully. {AffectedRows} rows affected.", affectedRows);
+                    return affectedRows;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error executing NonQuery: {Sql}", sql);
+                    throw;
+                }
             }
         }
 
-        // --- NEUE, TYPSICHERE GENERISCHE METHODEN ---
+        // --- TYPSICHERE GENERISCHE METHODEN ---
 
         /// <summary>
         /// Ruft eine einzelne Entität anhand ihrer Id ab (Typsicher).
@@ -108,6 +154,8 @@ namespace SqlAPI.Data
         public async Task<T?> GetByIdAsync<T>(object id) where T : class, new()
         {
             string tableName = GetTableName<T>();
+            _logger.LogDebug("Getting entity by ID. Type: {Type}, Table: {Table}, Id: {Id}", typeof(T).Name, tableName, id);
+            
             string sql = $"SELECT * FROM \"{tableName}\" WHERE \"Id\" = @Id;";
             var parameters = new Dictionary<string, object> { { "@Id", id } };
 
@@ -117,9 +165,12 @@ namespace SqlAPI.Data
             {
                 if (await reader.ReadAsync())
                 {
-                    return MapToEntity<T>(reader);
+                    var entity = MapToEntity<T>(reader);
+                    _logger.LogInformation("Entity found. Type: {Type}, Id: {Id}", typeof(T).Name, id);
+                    return entity;
                 }
             }
+            _logger.LogInformation("Entity not found. Type: {Type}, Id: {Id}", typeof(T).Name, id);
             return null;
         }
 
@@ -129,6 +180,8 @@ namespace SqlAPI.Data
         public async Task<List<T>> GetAllAsync<T>() where T : class, new()
         {
             string tableName = GetTableName<T>();
+            _logger.LogDebug("Getting all entities. Type: {Type}, Table: {Table}", typeof(T).Name, tableName);
+            
             string sql = $"SELECT * FROM \"{tableName}\";";
             
             var list = new List<T>();
@@ -141,6 +194,7 @@ namespace SqlAPI.Data
                     list.Add(MapToEntity<T>(reader));
                 }
             }
+            _logger.LogInformation("Retrieved {Count} entities. Type: {Type}", list.Count, typeof(T).Name);
             return list;
         }
 
@@ -152,14 +206,27 @@ namespace SqlAPI.Data
             if (entity == null) throw new ArgumentNullException(nameof(entity));
 
             string tableName = GetTableName<T>();
-            var properties = typeof(T).GetProperties().Where(p => p.Name != "Id"); // Annahme: Id wird von der DB generiert
+            var properties = GetNonIdProperties<T>();
+            
+            _logger.LogDebug("Inserting entity. Type: {Type}, Table: {Table}", typeof(T).Name, tableName);
 
             var columnNames = properties.Select(p => $"\"{p.Name}\"");
             var parameterNames = properties.Select(p => $"@{p.Name}");
             var queryParams = properties.ToDictionary(p => $"@{p.Name}", p => p.GetValue(entity) ?? DBNull.Value);
 
             string sql = $"INSERT INTO \"{tableName}\" ({string.Join(", ", columnNames)}) VALUES ({string.Join(", ", parameterNames)}) RETURNING \"Id\";";
-            return await ExecuteScalarAsync(sql, queryParams);
+            
+            try
+            {
+                var result = await ExecuteScalarAsync(sql, queryParams);
+                _logger.LogInformation("Entity inserted successfully. Type: {Type}, Id: {Id}", typeof(T).Name, result);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error inserting entity. Type: {Type}", typeof(T).Name);
+                throw;
+            }
         }
 
         /// <summary>
@@ -170,20 +237,32 @@ namespace SqlAPI.Data
             if (entity == null) throw new ArgumentNullException(nameof(entity));
 
             string tableName = GetTableName<T>();
-            var properties = typeof(T).GetProperties().Where(p => p.Name != "Id");
-            var idProperty = typeof(T).GetProperty("Id");
+            var properties = GetNonIdProperties<T>();
+            var idProperty = GetIdProperty<T>();
 
             if (idProperty == null) throw new InvalidOperationException($"Der Typ {typeof(T).Name} muss eine 'Id'-Eigenschaft für das Update besitzen.");
 
             var idValue = idProperty.GetValue(entity);
+            _logger.LogDebug("Updating entity. Type: {Type}, Table: {Table}, Id: {Id}", typeof(T).Name, tableName, idValue);
+            
             var setClauses = properties.Select(p => $"\"{p.Name}\" = @{p.Name}");
             var queryParams = properties.ToDictionary(p => $"@{p.Name}", p => p.GetValue(entity) ?? DBNull.Value);
-#pragma warning disable CS8604 // Possible null reference argument.
-            queryParams.Add("@Id", idValue);
-#pragma warning restore CS8604 // Possible null reference argument.
+            queryParams.Add("@Id", idValue!);
 
             string sql = $"UPDATE \"{tableName}\" SET {string.Join(", ", setClauses)} WHERE \"Id\" = @Id;";
-            return await ExecuteNonQueryAsync(sql, queryParams);
+            
+            try
+            {
+                var result = await ExecuteNonQueryAsync(sql, queryParams);
+                _logger.LogInformation("Entity updated successfully. Type: {Type}, Id: {Id}, Rows affected: {RowsAffected}", 
+                    typeof(T).Name, idValue, result);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating entity. Type: {Type}, Id: {Id}", typeof(T).Name, idValue);
+                throw;
+            }
         }
 
         /// <summary>
@@ -194,9 +273,23 @@ namespace SqlAPI.Data
             if (id == null) throw new ArgumentNullException(nameof(id));
 
             string tableName = GetTableName<T>();
+            _logger.LogDebug("Deleting entity. Type: {Type}, Table: {Table}, Id: {Id}", typeof(T).Name, tableName, id);
+            
             var queryParams = new Dictionary<string, object> { { "@Id", id } };
             string sql = $"DELETE FROM \"{tableName}\" WHERE \"Id\" = @Id;";
-            return await ExecuteNonQueryAsync(sql, queryParams);
+            
+            try
+            {
+                var result = await ExecuteNonQueryAsync(sql, queryParams);
+                _logger.LogInformation("Entity deleted successfully. Type: {Type}, Id: {Id}, Rows affected: {RowsAffected}", 
+                    typeof(T).Name, id, result);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting entity. Type: {Type}, Id: {Id}", typeof(T).Name, id);
+                throw;
+            }
         }
 
         /// <summary>
@@ -210,7 +303,9 @@ namespace SqlAPI.Data
                 if (entity == null) throw new ArgumentNullException(nameof(entity));
 
                 string tableName = GetTableName<T>();
-                var properties = typeof(T).GetProperties().Where(p => p.Name != "Id");
+                var properties = GetNonIdProperties<T>();
+                
+                _logger.LogDebug("Inserting entity with auto-close. Type: {Type}, Table: {Table}", typeof(T).Name, tableName);
 
                 var columnNames = properties.Select(p => $"\"{p.Name}\"");
                 var parameterNames = properties.Select(p => $"@{p.Name}");
@@ -221,8 +316,15 @@ namespace SqlAPI.Data
                 await OpenConnectionAsync();
                 using (var command = CreateCommand(sql, queryParams))
                 {
-                    return await command.ExecuteScalarAsync();
+                    var result = await command.ExecuteScalarAsync();
+                    _logger.LogInformation("Entity inserted successfully with auto-close. Type: {Type}, Id: {Id}", typeof(T).Name, result);
+                    return result;
                 }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error inserting entity with auto-close. Type: {Type}", typeof(T).Name);
+                throw;
             }
             finally
             {
@@ -239,7 +341,9 @@ namespace SqlAPI.Data
             try
             {
                 string tableName = GetTableName<T>();
-                var properties = typeof(T).GetProperties();
+                var properties = GetProperties<T>();
+                
+                _logger.LogDebug("Creating table. Type: {Type}, Table: {Table}", typeof(T).Name, tableName);
                 
                 var columns = new List<string>();
                 
@@ -258,7 +362,13 @@ namespace SqlAPI.Data
                 using (var command = CreateCommand(sql, null))
                 {
                     await command.ExecuteNonQueryAsync();
+                    _logger.LogInformation("Table created successfully. Type: {Type}, Table: {Table}", typeof(T).Name, tableName);
                 }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating table. Type: {Type}", typeof(T).Name);
+                throw;
             }
             finally
             {
@@ -266,19 +376,52 @@ namespace SqlAPI.Data
             }
         }
 
-        // --- Private Helper-Methoden ---
+        // --- Private Helper-Methoden mit Caching ---
 
         private string GetTableName<T>()
         {
-            // Einfache Annahme: Tabellenname ist der Klassenname im Plural.
-            // Für komplexere Fälle könnte man hier Attribute verwenden.
-            return typeof(T).Name + "s";
+            return TableNameCache.GetOrAdd(typeof(T), type =>
+            {
+                var tableName = type.Name + "s";
+                _logger.LogTrace("Cached table name for type {Type}: {TableName}", type.Name, tableName);
+                return tableName;
+            });
+        }
+
+        private PropertyInfo[] GetProperties<T>()
+        {
+            return PropertiesCache.GetOrAdd(typeof(T), type =>
+            {
+                var properties = type.GetProperties();
+                _logger.LogTrace("Cached {Count} properties for type {Type}", properties.Length, type.Name);
+                return properties;
+            });
+        }
+
+        private PropertyInfo[] GetNonIdProperties<T>()
+        {
+            return NonIdPropertiesCache.GetOrAdd(typeof(T), type =>
+            {
+                var properties = type.GetProperties().Where(p => p.Name != "Id").ToArray();
+                _logger.LogTrace("Cached {Count} non-ID properties for type {Type}", properties.Length, type.Name);
+                return properties;
+            });
+        }
+
+        private PropertyInfo? GetIdProperty<T>()
+        {
+            return IdPropertyCache.GetOrAdd(typeof(T), type =>
+            {
+                var property = type.GetProperty("Id");
+                _logger.LogTrace("Cached ID property for type {Type}: {Found}", type.Name, property != null);
+                return property;
+            });
         }
 
         private T MapToEntity<T>(IDataRecord record) where T : new()
         {
             var entity = new T();
-            var properties = typeof(T).GetProperties();
+            var properties = GetProperties<T>();
 
             for (int i = 0; i < record.FieldCount; i++)
             {
@@ -292,7 +435,7 @@ namespace SqlAPI.Data
             return entity;
         }
 
-        private string GetColumnDefinition(System.Reflection.PropertyInfo property)
+        private string GetColumnDefinition(PropertyInfo property)
         {
             string columnName = $"\"{property.Name}\"";
             string dataType = GetPostgreSqlDataType(property.PropertyType);
@@ -360,6 +503,7 @@ namespace SqlAPI.Data
             {
                 if (disposing)
                 {
+                    _logger.LogDebug("Disposing PostgreSqlDatabaseHandler");
                     _transaction?.Dispose();
                     _connection?.Dispose();
                 }
