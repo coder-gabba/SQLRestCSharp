@@ -4,6 +4,8 @@
 *.userosscache
 *.sln.docstates
 
+testresults/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/

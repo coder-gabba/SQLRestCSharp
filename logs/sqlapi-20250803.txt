@@ -42,3 +42,229 @@ Npgsql.NpgsqlException (0x80004005): Failed to connect to 127.0.0.1:5432
 2025-08-03 09:10:59.975 +00:00 [] [INF] Hosting environment: Development
 2025-08-03 09:10:59.975 +00:00 [] [INF] Content root path: /home/runner/work/SQLRestCSharp/SQLRestCSharp
 2025-08-03 09:11:03.574 +00:00 [] [INF] Application is shutting down...
+2025-08-03 13:59:18.520 +02:00 [] [WRN] Database initialization failed - continuing without database
+System.ArgumentNullException: Value cannot be null. (Parameter 'connectionString')
+   at SqlAPI.Data.PostgreSqlDatabaseHandler..ctor(String connectionString, ILogger`1 logger) in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 34
+   at Program.<<Main>$>g__InitializeDatabaseAsync|0_0() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Program.cs:line 67
+2025-08-03 13:59:18.671 +02:00 [] [INF] Starting web application
+2025-08-03 13:59:18.851 +02:00 [] [FTL] Application terminated unexpectedly
+System.InvalidOperationException: JWT_KEY environment variable is not configured
+   at Program.<<Main>$>g__ConfigureServices|0_1(IServiceCollection services) in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Program.cs:line 174
+   at Program.<Main>$(String[] args) in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Program.cs:line 39
+2025-08-03 14:04:54.378 +02:00 [] [INF] Initializing database schema...
+2025-08-03 14:04:54.805 +02:00 [] [ERR] Error creating table. Type: Person
+Npgsql.PostgresException (0x80004005): 28P01: password authentication failed for user "pg777"
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.Internal.NpgsqlConnector.AuthenticateSASL(List`1 mechanisms, String username, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Authenticate(String username, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|213_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken, Boolean isFirstAttempt)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.OpenNewConnector(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.<Get>g__RentAsync|33_0(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at SqlAPI.Data.PostgreSqlDatabaseHandler.OpenConnectionAsync() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 45
+   at SqlAPI.Data.PostgreSqlDatabaseHandler.CreateTableAsync[T]() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 361
+  Exception data:
+    Severity: FATAL
+    SqlState: 28P01
+    MessageText: password authentication failed for user "pg777"
+    File: auth.c
+    Line: 321
+    Routine: auth_failed
+2025-08-03 14:04:54.845 +02:00 [] [WRN] Database initialization failed - continuing without database
+Npgsql.PostgresException (0x80004005): 28P01: password authentication failed for user "pg777"
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.Internal.NpgsqlConnector.AuthenticateSASL(List`1 mechanisms, String username, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Authenticate(String username, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|213_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken, Boolean isFirstAttempt)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.OpenNewConnector(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.<Get>g__RentAsync|33_0(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at SqlAPI.Data.PostgreSqlDatabaseHandler.OpenConnectionAsync() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 45
+   at SqlAPI.Data.PostgreSqlDatabaseHandler.CreateTableAsync[T]() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 361
+   at SqlAPI.Data.PostgreSqlDatabaseHandler.CreateTableAsync[T]() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 376
+   at Program.<<Main>$>g__InitializeDatabaseAsync|0_0() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Program.cs:line 70
+  Exception data:
+    Severity: FATAL
+    SqlState: 28P01
+    MessageText: password authentication failed for user "pg777"
+    File: auth.c
+    Line: 321
+    Routine: auth_failed
+2025-08-03 14:04:54.877 +02:00 [] [INF] Starting web application
+2025-08-03 14:04:55.312 +02:00 [] [INF] Now listening on: http://localhost:5167
+2025-08-03 14:04:55.316 +02:00 [] [INF] Application started. Press Ctrl+C to shut down.
+2025-08-03 14:04:55.316 +02:00 [] [INF] Hosting environment: Development
+2025-08-03 14:04:55.316 +02:00 [] [INF] Content root path: /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp
+2025-08-03 14:05:08.895 +02:00 [] [INF] Application is shutting down...
+2025-08-03 14:05:55.238 +02:00 [] [INF] Initializing database schema...
+2025-08-03 14:05:55.599 +02:00 [] [ERR] Error creating table. Type: Person
+Npgsql.PostgresException (0x80004005): 28P01: password authentication failed for user "pg7"
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.Internal.NpgsqlConnector.AuthenticateSASL(List`1 mechanisms, String username, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Authenticate(String username, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|213_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken, Boolean isFirstAttempt)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.OpenNewConnector(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.<Get>g__RentAsync|33_0(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at SqlAPI.Data.PostgreSqlDatabaseHandler.OpenConnectionAsync() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 45
+   at SqlAPI.Data.PostgreSqlDatabaseHandler.CreateTableAsync[T]() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 361
+  Exception data:
+    Severity: FATAL
+    SqlState: 28P01
+    MessageText: password authentication failed for user "pg7"
+    File: auth.c
+    Line: 321
+    Routine: auth_failed
+2025-08-03 14:05:55.630 +02:00 [] [WRN] Database initialization failed - continuing without database
+Npgsql.PostgresException (0x80004005): 28P01: password authentication failed for user "pg7"
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.Internal.NpgsqlConnector.AuthenticateSASL(List`1 mechanisms, String username, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Authenticate(String username, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|213_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken, Boolean isFirstAttempt)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.OpenNewConnector(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.<Get>g__RentAsync|33_0(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at SqlAPI.Data.PostgreSqlDatabaseHandler.OpenConnectionAsync() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 45
+   at SqlAPI.Data.PostgreSqlDatabaseHandler.CreateTableAsync[T]() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 361
+   at SqlAPI.Data.PostgreSqlDatabaseHandler.CreateTableAsync[T]() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 376
+   at Program.<<Main>$>g__InitializeDatabaseAsync|0_0() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Program.cs:line 70
+  Exception data:
+    Severity: FATAL
+    SqlState: 28P01
+    MessageText: password authentication failed for user "pg7"
+    File: auth.c
+    Line: 321
+    Routine: auth_failed
+2025-08-03 14:05:55.652 +02:00 [] [INF] Starting web application
+2025-08-03 14:05:56.008 +02:00 [] [INF] Now listening on: http://localhost:5167
+2025-08-03 14:05:56.008 +02:00 [] [INF] Application started. Press Ctrl+C to shut down.
+2025-08-03 14:05:56.009 +02:00 [] [INF] Hosting environment: Development
+2025-08-03 14:05:56.009 +02:00 [] [INF] Content root path: /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp
+2025-08-03 14:06:02.411 +02:00 [] [INF] Application is shutting down...
+2025-08-03 14:15:13.427 +02:00 [] [INF] Checking if database 'mytestdb' exists...
+2025-08-03 14:15:14.168 +02:00 [] [WRN] Could not ensure database exists - continuing with initialization
+Npgsql.PostgresException (0x80004005): 28P01: password authentication failed for user "pg7"
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.Internal.NpgsqlConnector.AuthenticateSASL(List`1 mechanisms, String username, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Authenticate(String username, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|213_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken, Boolean isFirstAttempt)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.OpenNewConnector(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.<Get>g__RentAsync|33_0(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at Program.<<Main>$>g__EnsureDatabaseExistsAsync|0_0(String connectionString, ILogger logger) in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Program.cs:line 79
+  Exception data:
+    Severity: FATAL
+    SqlState: 28P01
+    MessageText: password authentication failed for user "pg7"
+    File: auth.c
+    Line: 321
+    Routine: auth_failed
+2025-08-03 14:15:14.201 +02:00 [] [INF] Ensuring Entity Framework database schema is up to date...
+2025-08-03 14:15:16.422 +02:00 [] [WRN] Could not ensure Entity Framework database - continuing with custom table creation
+Npgsql.PostgresException (0x80004005): 28P01: password authentication failed for user "pg7"
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.Internal.NpgsqlConnector.AuthenticateSASL(List`1 mechanisms, String username, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Authenticate(String username, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|213_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken, Boolean isFirstAttempt)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.UnpooledDataSource.Get(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlDatabaseCreator.Exists(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlDatabaseCreator.Exists(Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabaseCreator.EnsureCreatedAsync(CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabaseCreator.EnsureCreatedAsync(CancellationToken cancellationToken)
+   at Program.<<Main>$>g__EnsureEntityFrameworkDatabaseAsync|0_1(String connectionString, ILogger logger) in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Program.cs:line 127
+  Exception data:
+    Severity: FATAL
+    SqlState: 28P01
+    MessageText: password authentication failed for user "pg7"
+    File: auth.c
+    Line: 321
+    Routine: auth_failed
+2025-08-03 14:15:16.434 +02:00 [] [INF] Initializing database schema...
+2025-08-03 14:15:16.436 +02:00 [] [INF] Creating tables for all entity models...
+2025-08-03 14:15:16.506 +02:00 [] [ERR] Error creating table. Type: Person
+Npgsql.PostgresException (0x80004005): 28P01: password authentication failed for user "pg7"
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.Internal.NpgsqlConnector.AuthenticateSASL(List`1 mechanisms, String username, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Authenticate(String username, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|213_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken, Boolean isFirstAttempt)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.OpenNewConnector(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.<Get>g__RentAsync|33_0(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at SqlAPI.Data.PostgreSqlDatabaseHandler.OpenConnectionAsync() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 45
+   at SqlAPI.Data.PostgreSqlDatabaseHandler.CreateTableAsync[T]() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 361
+  Exception data:
+    Severity: FATAL
+    SqlState: 28P01
+    MessageText: password authentication failed for user "pg7"
+    File: auth.c
+    Line: 321
+    Routine: auth_failed
+2025-08-03 14:15:16.590 +02:00 [] [ERR] Error creating database tables
+Npgsql.PostgresException (0x80004005): 28P01: password authentication failed for user "pg7"
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.Internal.NpgsqlConnector.AuthenticateSASL(List`1 mechanisms, String username, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Authenticate(String username, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|213_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken, Boolean isFirstAttempt)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.OpenNewConnector(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.<Get>g__RentAsync|33_0(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at SqlAPI.Data.PostgreSqlDatabaseHandler.OpenConnectionAsync() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 45
+   at SqlAPI.Data.PostgreSqlDatabaseHandler.CreateTableAsync[T]() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 361
+   at SqlAPI.Data.PostgreSqlDatabaseHandler.CreateTableAsync[T]() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 376
+   at Program.<<Main>$>g__CreateAllTablesAsync|0_3(PostgreSqlDatabaseHandler dbHandler) in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Program.cs:line 233
+  Exception data:
+    Severity: FATAL
+    SqlState: 28P01
+    MessageText: password authentication failed for user "pg7"
+    File: auth.c
+    Line: 321
+    Routine: auth_failed
+2025-08-03 14:15:16.622 +02:00 [] [WRN] Database initialization failed - continuing without database
+Npgsql.PostgresException (0x80004005): 28P01: password authentication failed for user "pg7"
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.Internal.NpgsqlConnector.AuthenticateSASL(List`1 mechanisms, String username, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Authenticate(String username, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|213_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken, Boolean isFirstAttempt)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.OpenNewConnector(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.<Get>g__RentAsync|33_0(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at SqlAPI.Data.PostgreSqlDatabaseHandler.OpenConnectionAsync() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 45
+   at SqlAPI.Data.PostgreSqlDatabaseHandler.CreateTableAsync[T]() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 361
+   at SqlAPI.Data.PostgreSqlDatabaseHandler.CreateTableAsync[T]() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Data/PostgreSqlDatabaseHandler.cs:line 376
+   at Program.<<Main>$>g__CreateAllTablesAsync|0_3(PostgreSqlDatabaseHandler dbHandler) in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Program.cs:line 233
+   at Program.<<Main>$>g__InitializeDatabaseAsync|0_2() in /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp/Program.cs:line 171
+  Exception data:
+    Severity: FATAL
+    SqlState: 28P01
+    MessageText: password authentication failed for user "pg7"
+    File: auth.c
+    Line: 321
+    Routine: auth_failed
+2025-08-03 14:15:16.636 +02:00 [] [INF] Starting web application
+2025-08-03 14:15:17.195 +02:00 [] [INF] Now listening on: http://localhost:5167
+2025-08-03 14:15:17.197 +02:00 [] [INF] Application started. Press Ctrl+C to shut down.
+2025-08-03 14:15:17.200 +02:00 [] [INF] Hosting environment: Development
+2025-08-03 14:15:17.203 +02:00 [] [INF] Content root path: /home/user888/VSCodeRepos/CSharp/test/SqlAPI/SQLRestCSharp
+2025-08-03 14:16:39.774 +02:00 [] [INF] Application is shutting down...
