@@ -290,6 +290,7 @@ static void ConfigureServices(IServiceCollection services)
 
     // Register custom services
     services.AddSingleton<JwtService>();
+    services.AddScoped<IPersonService, PersonService>();
     services.AddSingleton(serviceProvider =>
     {
         var logger = serviceProvider.GetRequiredService<ILogger<PostgreSqlDatabaseHandler>>();
@@ -351,3 +352,6 @@ static void ConfigurePipeline(WebApplication app)
     app.UseAuthorization();
     app.MapControllers();
 }
+
+// Make Program class public for testing
+public partial class Program { }

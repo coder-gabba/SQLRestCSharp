@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SqlAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using SqlAPI.DTOs;
+using SqlAPI.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -20,12 +21,14 @@ namespace SqlAPI.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly ILogger<PeopleController> _logger;
+        private readonly IPersonService _personService;
 
-        public PeopleController(ApplicationDbContext context, IMapper mapper, ILogger<PeopleController> logger)
+        public PeopleController(ApplicationDbContext context, IMapper mapper, ILogger<PeopleController> logger, IPersonService personService)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
+            _personService = personService;
         }
 
         /// <summary>
@@ -188,6 +191,122 @@ namespace SqlAPI.Controllers
             {
                 _logger.LogError(ex, "Error occurred while deleting person with ID {PersonId}", id);
                 return StatusCode(500, "An error occurred while deleting the person");
+            }
+        }
+
+        /// <summary>
+        /// Advanced search for people with filtering, sorting, and pagination
+        /// </summary>
+        /// <param name="searchDto">Search criteria</param>
+        /// <returns>Paginated list of people matching the criteria</returns>
+        [HttpPost("search")]
+        public async Task<ActionResult<PagedResultDto<PersonDto>>> SearchPeople([FromBody] PersonSearchDto searchDto)
+        {
+            try
+            {
+                _logger.LogInformation("Searching people with criteria: {@SearchDto}", searchDto);
+                var result = await _personService.SearchPersonsAsync(searchDto);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while searching people");
+                return StatusCode(500, "An error occurred while searching people");
+            }
+        }
+
+        /// <summary>
+        /// Get people within a specific age range
+        /// </summary>
+        /// <param name="minAge">Minimum age</param>
+        /// <param name="maxAge">Maximum age</param>
+        /// <returns>List of people within the age range</returns>
+        [HttpGet("age-range")]
+        public async Task<ActionResult<IEnumerable<PersonDto>>> GetPeopleByAgeRange([FromQuery] int minAge, [FromQuery] int maxAge)
+        {
+            try
+            {
+                if (minAge < 0 || maxAge < 0 || minAge > maxAge)
+                {
+                    return BadRequest("Invalid age range. MinAge and MaxAge must be non-negative and MinAge must be <= MaxAge");
+                }
+
+                _logger.LogInformation("Getting people by age range: {MinAge}-{MaxAge}", minAge, maxAge);
+                var result = await _personService.GetPersonsByAgeRangeAsync(minAge, maxAge);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while getting people by age range");
+                return StatusCode(500, "An error occurred while retrieving people by age range");
+            }
+        }
+
+        /// <summary>
+        /// Get count of people by email domain
+        /// </summary>
+        /// <param name="domain">Email domain to search for (e.g., "@gmail.com")</param>
+        /// <returns>Count of people with the specified email domain</returns>
+        [HttpGet("count-by-domain")]
+        public async Task<ActionResult<int>> GetCountByEmailDomain([FromQuery] string domain)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(domain))
+                {
+                    return BadRequest("Domain parameter is required");
+                }
+
+                _logger.LogInformation("Getting count by email domain: {Domain}", domain);
+                var count = await _personService.GetCountByEmailDomainAsync(domain);
+                return Ok(count);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while getting count by email domain");
+                return StatusCode(500, "An error occurred while counting people by email domain");
+            }
+        }
+
+        /// <summary>
+        /// Get statistics about all people
+        /// </summary>
+        /// <returns>Statistical information about people</returns>
+        [HttpGet("statistics")]
+        public async Task<ActionResult<object>> GetStatistics()
+        {
+            try
+            {
+                _logger.LogInformation("Getting people statistics");
+                
+                var totalCount = await _context.People.CountAsync();
+                var averageAge = totalCount > 0 ? await _context.People.AverageAsync(p => p.Age) : 0;
+                var minAge = totalCount > 0 ? await _context.People.MinAsync(p => p.Age) : 0;
+                var maxAge = totalCount > 0 ? await _context.People.MaxAsync(p => p.Age) : 0;
+                
+                var emailDomains = await _context.People
+                    .Select(p => p.Email.Substring(p.Email.IndexOf('@')))
+                    .GroupBy(domain => domain)
+                    .Select(g => new { Domain = g.Key, Count = g.Count() })
+                    .OrderByDescending(x => x.Count)
+                    .Take(5)
+                    .ToListAsync();
+
+                var statistics = new
+                {
+                    TotalPeople = totalCount,
+                    AverageAge = Math.Round(averageAge, 2),
+                    MinAge = minAge,
+                    MaxAge = maxAge,
+                    TopEmailDomains = emailDomains
+                };
+
+                return Ok(statistics);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while getting statistics");
+                return StatusCode(500, "An error occurred while retrieving statistics");
             }
         }
 
